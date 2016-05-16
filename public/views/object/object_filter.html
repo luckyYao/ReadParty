@@ -1,0 +1,54 @@
+<div class="p++" style="max-width:800px;">
+<div ng-if="field.in_filter" style="position:relative;" ng-repeat="field in objectConfig.fields">
+    <!--text-field-->
+    <lx-text-field ng-if="field.type== 'string' || field.type == 'text' || field.type == 'fulltext' || field.type== 'float' || field.type== 'decimal'  " label="{{field.comment || field.name}}" >
+        <input type="text"  ng-model="filterArr[field.name]" >
+    </lx-text-field>
+
+    <!--int-field-->
+    <lx-text-field ng-if="field.type == 'number' && !field.relate" label="{{field.comment || field.name}}" >
+        <input type="text"  ng-model="filterArr[field.name]">
+    </lx-text-field>
+
+    <!--datetime-field-->
+    <lx-text-field ng-if="field.type == 'datetime'" label="{{field.comment || field.name}} | 格式：2015-09-02 17:46:59" >
+        <input type="text"  ng-model="filterArr[field.name]" >
+    </lx-text-field>
+
+    <!--bool-field-->
+    <div  ng-if="field.type == 'boolean' " style="margin-top:15px;">
+        <input type="checkbox" id="switch_{{field.name}}" class="switch__input " ng-model="filterArr[field.name]" >
+        <label for="switch_{{field.name}}" class="switch__label">{{field.comment || field.name}}</label>
+    </div>
+
+    <!--select-->
+    <lx-select ng-if="field.type == 'relate'" ng-model="filterArr[field.name]" placeholder="{{field.relate.comment || field.relate.name}}"
+               choices="ajax.list[field.relate.table]"  loading="{{ ajax.loading }}" ng-init="ajax.init(field.relate)"
+               filter="ajax.update(field.relate, newValue, oldValue)"
+               min-length="0" allow-clear="true" selection-to-model="ajax.toModel(field.relate, data, callback)"
+               model-to-selection="ajax.toSelection(field.relate, data, callback)">
+        <label style="font-size:12px;color:#979797;">{{field.relate.comment || field.name}}</label>
+        <lx-select-selected>
+            {{ $selected[field.relate.select] }}
+        </lx-select-selected>
+
+        <lx-select-choices>
+            {{ $choice[field.relate.select] }}
+        </lx-select-choices>
+    </lx-select>
+
+    <!--select-->
+    <lx-select ng-if="field.type == 'enum'" ng-model="filterArr[field.name]" placeholder="{{field.comment || field.name}}" choices="enumSelect.list[field.name]" selection-to-model="enumSelect.toModel(data, callback)" ng-init="enumSelect.init(field.name,field.enum)" model-to-selection="enumSelect.toSelection(field.enum,data, callback)">
+        <label style="font-size:12px;color:#979797;">{{field.comment || field.name}}</label>
+        <lx-select-selected>
+            {{ $selected["value"] }}
+        </lx-select-selected>
+
+        <lx-select-choices>
+            {{ $choice["value"] }}
+        </lx-select-choices>
+    </lx-select>            
+    
+</div>
+  
+</div>
