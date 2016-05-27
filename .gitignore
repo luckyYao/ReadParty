@@ -2,4 +2,5 @@ public/sass
 public/.sass-catch
 public/validateForm5
 public/uploads
+public/node_modules
 .env

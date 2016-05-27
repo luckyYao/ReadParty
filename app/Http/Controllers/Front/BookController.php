@@ -11,12 +11,23 @@ use Validator;
 
 class BookController extends BaseController
 {	
+    // douban
+    public function douban(){
+        $data = Request::all();
+        $isbn = $data['isbn'];
+        // $user_id = $data['user_id'];
+        //验证用户
+
+        $bookInfo = json_decode($this->httpRequest('https://api.douban.com/v2/book/isbn/'.$isbn));
+        return $this->jsonResponse(false,$bookInfo,"书籍详情");
+    }
+
     // 添加一条图书记录或求帮忙记录
 	public function store($type)
 	{	
         $data = Request::all();
         $isbn = $data['isbn'];
-        $user_id = $data['user_id'];
+        // $user_id = $data['user_id'];
         //验证用户
 
         $bookInfo = json_decode($this->httpRequest('https://api.douban.com/v2/book/isbn/'.$isbn));
@@ -76,22 +87,6 @@ class BookController extends BaseController
             ->where('tag.is_show',1)
             ->distinct()
             ->select('name')
-            ->get();
-        var_dump($result);exit();
-    }
-
-    // 获取标签下的所有书
-    public function tagBookIndex()
-    {
-        $param = Request::all();
-        $tag = $param['tag'];
-        $result = DB::table('tag')
-            ->join('borrow','tag.isbn','=','borrow.isbn')
-            ->join('user','borrow.user_id','=','user.id')
-            ->where('tag.name',$tag)
-            ->where('tag.is_show',1)
-            ->where('tag.is_delete',0)
-            ->select('borrow.*','user.name as user_name')
             ->get();
         var_dump($result);exit();
     }

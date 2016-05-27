@@ -136,4 +136,48 @@ class BaseController extends Controller
         }
         return $userType;
     }
+
+    // 获取借书|帮忙列表
+    public function getBooks($type)
+    {
+        $result = DB::table($type)
+            ->join('user', $type.'.user_id', '=', 'user.id')
+            ->where($type.'.is_delete',0)
+            ->where($type.'.is_show',1)
+            ->select($type.'.*', 'user.name as user_name')
+            ->orderBy($type.'.times','DESC')
+            ->get();
+        foreach ($result as $key => $value) {
+            $value->tags = DB::table('tag')
+                        ->select('*')
+                        ->where('tag.isbn',$value->isbn)
+                        ->where('tag.is_delete',0)
+                        ->where('tag.is_show',1)
+                        ->distinct()
+                        ->get();
+        }
+        return $result;
+    }
+    // 获取所有书籍标签
+    public function getTags($type)
+    {
+        $isbns = DB::table($type)
+        ->select($type.'.isbn')
+        ->where($type.'.is_delete',0)
+        ->where($type.'.is_show',1)
+        ->get();
+        $isbn_new = [];
+        foreach ($isbns as $key => $value) {
+            array_push($isbn_new,$value->isbn);
+        }
+        $result = DB::table('tag')
+            ->where('tag.is_delete',0)
+            ->where('tag.is_show',1)
+            ->whereIn('tag.isbn',$isbn_new)
+            ->distinct()
+            ->select('name')
+            ->get();
+        return $result;
+    }
+    
 }

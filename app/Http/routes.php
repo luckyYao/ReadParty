@@ -17,28 +17,18 @@ $app->get('/admin', function()
 	return view('admin.admin');
 });
 
-$app->get('/', function () use ($app) {
-	return view('front/index'); 
-});
-$app->get('/book/id', function () use ($app) {
-	return view('front/book/show'); 
-});
-
-// 分享你的生活
-$app->get('/share', function () use ($app) {
-	return view('front/share'); 
-});
-
-// 个人
-$app->get('/my/book', function () use ($app) {
-	return view('front/my/book'); 
-});
-$app->get('/my/book/add', function () use ($app) {
-	return view('front/my/add'); 
-});
-$app->get('/my/share', function () use ($app) {
-	return view('front/my/share'); 
-});
+session_start();
+if(isset($_GET['token'])){
+	$_SESSION['token'] = $_GET['token'];
+	$url = $_SERVER['REQUEST_URI'];
+	$urlArr = [];
+	$urlArr = parse_url($url);
+	parse_str($urlArr['query'],$queryArr);
+	unset($queryArr['token']);
+	$urlNew = http_build_query($queryArr);
+	$redirectUrl = 'http://'.$_SERVER['HTTP_HOST'].$urlArr['path'].'?'.$urlNew;
+	header("location:".$redirectUrl);exit();
+}
 
 $app->group(array('prefix'=>'/'),function() use ($app){
 	
@@ -48,8 +38,10 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 	$app->post('/store',                   								'App\Http\Controllers\Front\UserController@store');
 	
 	// 借书+求帮忙
-	$app->get('/borrow',                						    	'App\Http\Controllers\Front\PartyController@indexBorrow');
+	$app->get('/',                						    	    'App\Http\Controllers\Front\PartyController@index');
 	$app->get('/help',                						    	    'App\Http\Controllers\Front\PartyController@indexHelp');
+	$app->get('/book/add',                 					    		'App\Http\Controllers\Front\PartyController@addBook');
+	$app->post('/tag/book',                 					    		'App\Http\Controllers\Front\PartyController@tagBookIndex');
 	$app->get('/{type}/{id}',                   						'App\Http\Controllers\Front\PartyController@show');
 	$app->post('{type}/{book_id}/timeline',                 			'App\Http\Controllers\Front\PartyController@timeLineAdd');
 	$app->post('{type}/{book_id}/timeline/{id}',                		'App\Http\Controllers\Front\PartyController@timeLineUpdate');
@@ -64,10 +56,14 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 	$app->get('news/{id}//comments',                					'App\Http\Controllers\Front\CommentsController@index');
 
 	// 发布分享书或求帮忙信息
+	$app->post('/douban',                 					        'App\Http\Controllers\Front\BookController@douban');
 	$app->post('/book/{type}',                 					        'App\Http\Controllers\Front\BookController@store');
 	$app->get('/tag',                 					        	'App\Http\Controllers\Front\BookController@tagIndex');
 	$app->get('/book/{isbn}/tag',                 					    'App\Http\Controllers\Front\BookController@bookTagIndex');
-	$app->post('/book',                 					    'App\Http\Controllers\Front\BookController@tagBookIndex');
+
+	// 我的XXX
+	$app->get('/my',                 					    'App\Http\Controllers\Front\PartyController@myIndex');
+
 
 });
 

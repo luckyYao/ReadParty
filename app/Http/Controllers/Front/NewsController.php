@@ -17,9 +17,8 @@ class NewsController extends BaseController
             ->join('user', 'news.user_id', '=', 'user.id')
             ->where('news.is_delete',0)
             ->where('news.is_show',1)
-            ->select('news.*','user.name as user_name')
+            ->select('news.*','user.name as user_name','user.head_pic as user_pic')
             ->get();
-        var_dump($result);exit();
         return view("front/news/index",['result'=>$result]);
 	}
 

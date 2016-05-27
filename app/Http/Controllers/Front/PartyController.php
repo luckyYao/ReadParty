@@ -11,29 +11,68 @@ use Validator;
 
 class PartyController extends BaseController
 {	
-	public function indexBorrow()
-	{	
-        $result = DB::table('borrow')
-            ->join('user', 'borrow.user_id', '=', 'user.id')
-            ->where('borrow.is_delete',0)
-            ->where('borrow.is_show',1)
-            ->select('borrow.*', 'user.name')
-            ->get();
-        var_dump($result);exit();
-        return view("front/borrow/index",['result'=>$result]);
-	}
+    public function index()
+    {
+        $result['borrow'] = $this->getBooks('borrow');
+        $result['type'] = 'borrow';
+        $result['tags'] = $this->getTags('borrow');
+        $result['tags_current'] = 'all';
+        return view("front/book/index",['result'=>$result]);
+    }
+
     public function indexHelp()
     {   
-        $result = DB::table('help')
-            ->join('user', 'help.user_id', '=', 'user.id')
-            ->where('help.is_delete',0)
-            ->where('help.is_show',1)
-            ->select('help.*','user.name')
+        $result['help'] = $this->getBooks('help');
+        $result['type'] = 'help';
+        $result['tags'] = $this->getTags('help');
+        $result['tags_current'] = 'all';
+        return view("front/book/index",['result'=>$result]);
+    }
+
+    // 获取标签下的所有书
+    public function tagBookIndex()
+    {
+        $param = Request::all();
+        $tag = $param['tag'];
+        $type = $param['type'];
+        //根据标签获取图书 
+        $result[$type] = DB::table('tag')
+            ->join($type,'tag.isbn','=',$type.'.isbn')
+            ->join('user',$type.'.user_id','=','user.id')
+            ->where('tag.name',$tag)
+            ->where('tag.is_show',1)
+            ->where('tag.is_delete',0)
+            ->select($type.'.*','user.name as user_name')
             ->get();
-        var_dump($result);exit();
-        return view("front/help/index",['result'=>$result]);
+        foreach ($result[$type]  as $key => $value) {
+            $value->tags = DB::table('tag')
+                        ->select('*')
+                        ->where('tag.isbn',$value->isbn)
+                        ->where('tag.is_delete',0)
+                        ->where('tag.is_show',1)
+                        ->distinct()
+                        ->get();
+        }
+        $result['tags'] = $this->getTags($type);
+        $result['type'] = $type;
+        $result['tags_current'] = $tag;
+        return view("front/book/index",['result'=>$result]);
     }
     
+    // 添加一本书
+    public function addBook()
+    {
+        // var_dump(empty($_SESSION['token']));exit();
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        $userInfo = $this->tokenUserInfo($token);
+        if (!empty($token)) {
+            return view("front/book/add",['result'=>$userInfo]);
+        }else{
+            $url = env('PTIME_URL').'/oauth2/auth?client_id='.env('CLIENT_ID').'&redirect_uri='.urlencode('http://'.$_SERVER['HTTP_HOST'].'/book/add').'&response_type=token'; 
+            return redirect($url);
+        }
+    }
+
     // 获取借书/帮忙的详情
     public function show($type,$id)
     {
@@ -43,7 +82,7 @@ class PartyController extends BaseController
             ->where($type.'.is_show', 1)
             ->where($type.'.is_delete', 0)
             ->join('user', $type.'.user_id', '=', 'user.id')
-            ->select($type.'.*', 'user.name','user.id as user_id')
+            ->select($type.'.*', 'user.name as user_name','user.id as user_id')
             ->first();
         if (empty($result)) {
             return $this->jsonResponse(false,[],"书籍不存在");
@@ -58,9 +97,14 @@ class PartyController extends BaseController
             ->select($table.'.*','user.name as user_name')
             ->get();
         $result->timeline = $timeline;
-        return view("front/".$type."/show",['result'=>$result]);
+        return view("front/book/show",['result'=>$result]);
     }
 
+    // wode 
+    public function myIndex()
+    {
+        return view("front/my/index");
+    }
     // 添加时间点 借书/帮忙
     public function timeLineAdd($type,$book_id)
     {   
