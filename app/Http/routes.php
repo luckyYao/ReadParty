@@ -20,6 +20,10 @@ $app->get('/goodNews', function()
 {	
 	return view('front.goodNews');
 });
+$app->get('/yaping', function()
+{	
+	return view('front.yaping');
+});
 
 session_start();
 if(isset($_GET['token'])){
