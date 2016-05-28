@@ -38,6 +38,7 @@
 <body style="padding:0">
     <section class="padding">
         <h3>灯塔教会2016年暑期跨国短宣之寻求支持信</h3>
+        <img src="http://7xtan3.com1.z0.glb.clouddn.com/logo.png" style="display:block;margin:15px auto;">
         <p style="text-indent:0">主内亲爱的肢体：</br>平安！</p>
         <p>您能收到这封筹款信，说明您是我们灯塔教会及我们的肢体所非常信任的一员！愿神的恩典在您身上多而又多，使您蒙福之后，也愿意祝福更多的人！</p>
         <p>现将我们2016年暑期跨国短宣事宜简介如下:</p>
@@ -56,7 +57,7 @@
         <p>若您有任何疑问，请随时咨询将此信交在您手里的弟兄/姐妹，或直接联系灯塔教会福音宣教部负责人陈晓霞姊妹（手机：+86 18833876209 微信Wechat：RitaChenQHD）。</p>
         <p>以上信息也同样鼓励您向自己所非常信任的弟兄姊妹，或所在团契、教会分享，欢迎各位肢体以代祷及支持来加入我们今年的暑期短宣团队，一起同工！</p>
         <p>愿主耶稣基督的恩惠，神的慈爱，圣灵的感动，常与我们众人同在，直到永远！阿们！</p>
-                <img src="http://7xtan3.com1.z0.glb.clouddn.com/logo.png?webImage/2/2/120" style="float:right;width:60px;margin-left:15px;">
+        <!-- <img src="http://7xtan3.com1.z0.glb.clouddn.com/logo.png?webImage/2/2/120" style="float:right;width:60px;margin-left:15px;"> -->
         <p style="text-align:right">灯塔教会福音宣教部及</br>
         灯塔教会治理同工委员会</br>
         2016年5月17日
