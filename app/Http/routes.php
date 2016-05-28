@@ -16,6 +16,10 @@ $app->get('/admin', function()
 		return view('admin.login');
 	return view('admin.admin');
 });
+$app->get('/lcc', function()
+{	
+	return view('front.lcc');
+});
 
 session_start();
 if(isset($_GET['token'])){
