@@ -16,9 +16,9 @@ $app->get('/admin', function()
 		return view('admin.login');
 	return view('admin.admin');
 });
-$app->get('/lcc', function()
+$app->get('/goodNews', function()
 {	
-	return view('front.lcc');
+	return view('front.goodNews');
 });
 
 session_start();
