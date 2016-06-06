@@ -62,6 +62,7 @@
         灯塔教会治理同工委员会</br>
         2016年5月17日
         </p>
+<<<<<<< HEAD:resources/views/front/goodNews.php
         <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_20150727193932.jpg?imageView2/2/w/800">
 <<<<<<< HEAD
         <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_20150805144710.jpg?imageView2/2/w/800">
@@ -73,6 +74,8 @@
         <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_3581.JPG?imageView2/2/w/800">
         <p style="text-align:center">(2015年照片)</p>
 >>>>>>> c4cef316479b8428be51281b2abe5388e7e11e4e
+=======
+>>>>>>> 6aba5a7ffd38af5488378129ae6fa2017f9ecaad:resources/views/front/godNews.php
     </section>
 </body>
 </html>
