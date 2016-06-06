@@ -51,7 +51,7 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 	$app->get('/book/add',                 					    		'App\Http\Controllers\Front\PartyController@addBook');
 	$app->post('/tag/book',                 					    		'App\Http\Controllers\Front\PartyController@tagBookIndex');
 	$app->get('/{type}/{id}',                   						'App\Http\Controllers\Front\PartyController@show');
-	$app->post('{type}/{book_id}/timeline',                 			'App\Http\Controllers\Front\PartyController@timeLineAdd');
+	$app->post('borrow/{book_id}/timeline',                 			'App\Http\Controllers\Front\PartyController@timeLineAdd');
 	$app->post('{type}/{book_id}/timeline/{id}',                		'App\Http\Controllers\Front\PartyController@timeLineUpdate');
 
 	// news
@@ -66,13 +66,13 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 	// 发布分享书或求帮忙信息
 	$app->post('/douban',                 					        'App\Http\Controllers\Front\BookController@douban');
 	$app->post('/book/{type}',                 					        'App\Http\Controllers\Front\BookController@store');
+	
 	$app->get('/tag',                 					        	'App\Http\Controllers\Front\BookController@tagIndex');
 	$app->get('/book/{isbn}/tag',                 					    'App\Http\Controllers\Front\BookController@bookTagIndex');
 
 	// 我的XXX
-	$app->get('/my',                 					    'App\Http\Controllers\Front\PartyController@myIndex');
-
-
+	$app->get('/myBook',                 					    'App\Http\Controllers\Front\PartyController@myBook');
+	$app->get('/myNews',                 					    'App\Http\Controllers\Front\PartyController@myNews');
 });
 
 $api = app('Dingo\Api\Routing\Router');

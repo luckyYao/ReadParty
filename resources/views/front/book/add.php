@@ -2,96 +2,195 @@
     $title        = "拾光&nbsp;&bull;&nbsp;阅读";
     $description  = "燕大图书漂流";
     $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
-    // var_dump($result);exit();
+     // var_dump($result);exit();
 ?>
-<?php include("../resources/views/front/common/header.php");?>
-<section id="addBook">
-	<section class="padding tabs" style="background:#fff">
-		<div class="label-box">
-		  <span class="label big current" v-on:click = "handleSwitch">分享书</span>
-		  <span class="label middle">or</span>
-		  <span class="label big" v-on:click = "handleSwitch">求帮忙</span>
+<?php include("../resources/views/front/header.php");?>
+<style type="text/css">
+	body{
+    	box-shadow: none;
+    	background: #fff;
+	}
+</style>
+<section>
+	<div class="step" id="stepChoose">
+		<h1>请选择要执行的操作</h1>
+		<div class="current option" name="borrow">
+			<h2>1.分享书</h2>
+			<p>好书与其躺在书架上，</br>不如拿出来和大家一起分享</p>
 		</div>
-		<p style="color:#76862e;text-align:center;line-height:24px;" v-if="!is_help">
-			好书不应躺在书架上，</br>
-			堆在角落里。</br>
-			在阅读派对上分享一本书，</br>
-			开启他的漂流之旅</br>
-			让他成为一本有故事的好书！
-		</p>
-		<p style="color:#76862e;text-align:center;line-height:24px;" v-if="is_help">
-			书非借不能读也，</br>
-			发送借书申请</br>
-			我们一起找好书
-		</p>
-	</section>
-	<div class="item" style="margin:10px 0;" v-if="ok">
-	  	<a href="/borrow/1">
-		    <img v-bind:src="bookInfo['image']" class="block">
-		    <h3>{{bookInfo['title']}}</h3>
-		    <p>{{words}}</p>
-		    <p>主人：<?=$result->name?></p>
-	  	</a>
-	  	<hr>
-	  	<form action="/book" style="display:inline-block" method="post" v-for="item in bookInfo['tags']">
-	  		<input name='tag' type="text" class="hidden" value="{{item.name}}">
-			<input class="label" type="submit" value="{{item.name}}">
-	  	</form>
+		<div class="option" name="help">
+			<h2>2.求帮忙</h2>
+			<p>想看的书在派对上没找到？</br>发布借书申请，大家一起帮你找书</p>
+		</div>
+		<div class="option" name="chat">
+			<h2>3.聊心情</h2>
+			<p>以书会友，总能找到志同道合的朋友~</br>随便聊，但不可放肆哦，派对保安一直在巡逻哦！</p>
+		</div>
+		<div class="step-button" onclick="step('stepIsbn')">
+			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/60">
+			<span>下一步</span>
+		</div>
 	</div>
-	<section class="padding" style="background:#fff;">
-		<form class="commentBox" style="margin-bottom:0;width:80%;">
-			<h3 style="color:#76862e;text-align:center">step1:输入isbn号</h3>
-			<p class="highLight">isbn:书籍封面条形码附近</p>
-			<input type="text" placeholder="isbn号" v-model="isbn" v-on:blur = "getBookInfo" style="width:100%;border:1px solid #c2ce8c;box-sizing: border-box;">
-			<h3 style="color:#76862e;text-align:center">step2:说点什么吧</h3>
-			<textarea rows="4" placeholder="说点什么吧~" v-model="words" ></textarea>
-			<input type="submit" value="好了" class="right" style="font-size:12px;padding:0 15px;line-height:24px;margin-bottom:20px;">
-		</form>
-	</section>
+	<div class="step" id="stepIsbn">
+		<h1>请输入书籍的&nbsp;isbn&nbsp;号</h1>
+		<input type="text" name="isbn" oninput="getBookInfo()">
+		<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
+		<div class="bookInfo">
+			
+		</div>
+		<div class="step-button" onclick="step('stepWords')">
+			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/60">
+			<span>下一步</span>
+		</div>
+		<div class="reback" onclick="step('stepChoose')">←</div>
+	</div>
+	<div class="step" id="stepWords" >
+		<h1>说点什么给看到这本书的人吧</h1>
+		<textarea  name="words" rows="4" placeholder="你好，陌生人，我最喜欢的书分享给你，请认
+        真阅读哦"></textarea>
+		<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
+		<div class="step-button" onclick="showDialogue()">
+			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/60">
+			<span>好了</span>
+		</div>
+		<div class="reback" onclick="step('stepIsbn')">←</div>
+	</div>
 </section>
-
-<?php include("../resources/views/front/common/footer.php");?>
+<!-- 课表详情对话框 -->
+<div class="shadow" id="dialogue">
+	<div class="shadowContent">
+		<h4 class="mcolor">您好，<?=$user_name?></h4>
+		<p id="state"></p>
+		<p id="attention">
+		</p>
+		<h4 class="btn"><span onclick="hide('dialogue')" id="close"></span><span id="go" class="mcolor" onclick="addBook()">好的，了解</span></h4>
+	</div>
+</div>
+<?php include("../resources/views/front/footer.php");?>
 <script type="text/javascript">
-	hide("editButton");
-	new Vue({
-	  	el: '#addBook',
-	  	data: {
-	  		ok:false,
-	    	is_help: false,
-	    	isbn:'',
-	    	words:'说点什么吧~',
-	    	bookInfo:[],  
-	  	methods:{
-	  		handleSwitch:function (){
-	  			this.is_help = !this.is_help;
-	  		},
-	  		getBookInfo:function(){
-	  			if (this.isbn.length==11||this.isbn.length==13) {
-	  				var ok='';
-	  				var bookInfo=[];
-	  				$.ajax({
-	  					url:"/douban",
-	                    type:"post",
-	                    data:{isbn:this.isbn},
-	                    async:false,
-	                    dataType:'json',
-	                    success:function(data){
-	                    	if (!data.error) {
-	                    		ok = true;
-	                    		bookInfo['title'] = data.result.title;
-	                    		bookInfo['image'] = data.result.image;
-	                    		bookInfo['tags'] = data.result.tags;
-	                    	};
-	                    },
-	                    error:function(data){       
-	                    	console.log(data);
-	                    }
-	  				});
-	  				this.ok = ok;
-	  				this.bookInfo = bookInfo;
-	  				console.log(this.bookInfo);
-	  			};
-	  		}
-	  	}
+    function kset(key,value){window.localStorage.setItem(key,value);}
+    function kget(key){return window.localStorage.getItem(key);}
+    function kremove(key){window.localStorage.removeItem(key);}
+	$("#editButton").hide();	
+	function step(id){
+		if(kget('option')!='chat'){
+			if (id=='stepWords'&& kget('isbn')==null) {
+				$(".tip").html('Tips：请输入书籍的isbn号');
+	           	$(".tip").addClass("error");
+			}else{
+				$("#"+id).siblings().hide();
+				$("#"+id).show();
+			};
+		}else{
+			window.location.href = 'http://127.0.0.1:85/news';
+		};
+	}
+	function getBookInfo(){
+		var isbn = $("input[name='isbn']").val();
+		if (isbn.length==13) {
+			$("input[name='isbn']").blur();
+			$.ajax({
+				url:"/douban",
+	            type:"post",
+	            data:{isbn:isbn},
+	            async:false,
+	            dataType:'json',
+	            success:function(data){
+	            	if (!data.error) {
+	            		if (data.result.id) {
+	            			kset('isbn',data.result.isbn13);
+	            			kset('book_name',data.result.title);
+	            			var tpl = '<h3>是这本书吗？</h3>\
+										<img class="left" src="'+data.result.image+'">\
+										<p class="right">作者: '+data.result.author+'</br>\
+										译者：'+data.result.translator+'</br>\
+										出版社: '+data.result.publisher+'</br>\
+										出版年: '+data.result.pubdate+'</br>\
+										页数: '+data.result.pages+'</br>\
+										定价: '+data.result.price+'</br>\
+										装帧: '+data.result.binding+'</br>\
+										</p>';
+							$('.bookInfo').append(tpl);
+							$('.bookInfo').show();
+							$(".tip").html('Tips：找到啦~');
+	            			$(".tip").removeClass("error");
+	            		}else{
+	            			$(".tip").html('Tips：书籍没有找到，检查isbn号是否有误');
+	            			$(".tip").addClass("error");
+	            		};
+	            	}else{
+	            		$(".tip").html('Tips：'+data.message);
+	            		$(".tip").addClass("error");
+	            	};
+	            },
+	            error:function(data){       
+	            	$(".tip").html('Tips：'+data.message);
+	            	$(".tip").addClass("error");
+	            }
+			});
+		};
+	}
+	$('.option').on('click',function(){
+		$(this).addClass('current');
+		$(this).siblings().removeClass('current');
+		kset('option',$(this).attr('name'));
 	})
+
+	function addBook(){
+		var data = {
+			'isbn':kget('isbn'),
+			'words':$('textarea[name="words"]').val()
+		};
+		$.ajax({
+			url:"/book/"+kget('option'),
+	        type:"post",
+	        data:data,
+	        async:false,
+	        dataType:'json',
+	        success:function(data){
+	        	if (!data.error) {
+	        		var r=confirm(data.message+"去看看？");
+					if (r==true){
+						window.location.href=data.result.url;
+					}
+	        	}else{
+	        		var r=confirm(data.message+"去看看？");
+					if (r==true){
+						window.location.href=data.result.url;
+					}else{
+						
+					}
+	        	};
+	        },
+	        error:function(data){     
+	        	toast(data.message);
+	        }
+		});
+	}
+	function showDialogue(){
+		$("#state").html('');
+		$("#attention").html('');
+		$("#close").html('');
+		$("#go").html('');
+		
+		var close = '算了，不分享了';
+		var go = '好的，了解';
+		$("#close").append(close);
+		$("#go").append(go);
+		if (kget('option')=='borrow') {
+			var state = '您即将分享书籍《'+kget('book_name')+'》，请认真阅读以下内容:';
+			var attention = '1.您的书籍在阅读派对上至少要漂流3个月哦，3个月后您可以随时收回您的书。</br>\
+							 2.点击确定后派对将会帮你创建一个“readParty·'+kget('book_name')+'”的拾光团队，以后借在这本书的用户会自动加入到这个团队，方便你们联系。</br>';
+			
+			$("#state").append(state);
+			$("#attention").append(attention);
+		}else{
+			var state = '您即将申请借阅书籍《'+kget('book_name')+'》，请认真阅读以下内容:';
+			var attention = '1.您的<span class="mcolor">帮忙借书</span>的人越多，借到的可能越大哦~</br>\
+							 2.申请成功后可以分享给好友让他们<span class="mcolor">帮忙借书</span>，超过30人帮忙还没有人借给你书的话，阅读派对会买一本《'+kget('book_name')+'》借给你哦';
+			$("#state").append(state);
+			$("#attention").append(attention);
+		};
+		$("#dialogue").show();
+	}
 </script>

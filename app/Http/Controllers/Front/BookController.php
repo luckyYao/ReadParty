@@ -15,9 +15,6 @@ class BookController extends BaseController
     public function douban(){
         $data = Request::all();
         $isbn = $data['isbn'];
-        // $user_id = $data['user_id'];
-        //验证用户
-
         $bookInfo = json_decode($this->httpRequest('https://api.douban.com/v2/book/isbn/'.$isbn));
         return $this->jsonResponse(false,$bookInfo,"书籍详情");
     }
@@ -27,13 +24,28 @@ class BookController extends BaseController
 	{	
         $data = Request::all();
         $isbn = $data['isbn'];
-        // $user_id = $data['user_id'];
-        //验证用户
-
+        // 获取用户信息
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        $userInfo = $this->tokenUserInfo($token);
+        $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+        if (empty($user_exits)) {
+            $user_id = DB::table('user')
+                ->insertGetId([
+                    'name' => $userInfo->name,
+                    'sex'    => $userInfo->sex,
+                    'icon' => $userInfo->icon, 
+                    'school_id' => $userInfo->school_id, 
+                    'description' => $userInfo->description, 
+                    'email' => $userInfo->email, 
+                    'phone' => $userInfo->phone,
+                    'is_actived' => $userInfo->is_actived,
+                    'is_verified' => $userInfo->is_verified
+                    ]);
+        }else{
+            $user_id = $user_exits->id;
+        }
+        // 获取图书信息
         $bookInfo = json_decode($this->httpRequest('https://api.douban.com/v2/book/isbn/'.$isbn));
-        $data['book_img']  =  $bookInfo->image;
-        $data['book_name'] =  $bookInfo->title;
-        $data['value']     =  $bookInfo->pages*0.3;
 
         //如果是第一次分享这本书则保存该书的标签
         $tags = $bookInfo->tags;
@@ -50,19 +62,32 @@ class BookController extends BaseController
         // 将图书基本信息放到对应的表里面
         $book_exits  = DB::table($type)->where('user_id',$user_id)->where('isbn',$isbn)->first();
         if (empty($book_exits)) {
-            // 检验申请的书是否已经存在
             if ($type == 'help') {
                 $borrow_exits  = DB::table('borrow')->where('user_id',$user_id)->where('isbn',$isbn)->first();
                 if (!empty($borrow_exits)) {
-                    return $this->jsonResponse(true,$borrow_exits,"派对上已经有这本书了~");
+                    $result = ['url'=>'/borrow/'.$borrow_exits->id];
+                    return $this->jsonResponse(true,$result,"派对上已经有这本书了~");
                 }
             }
-            $borrow_id = DB::table($type)->insertGetId($data);
+
+            $borrow_id = DB::table($type)
+                        ->insertGetId([
+                            'user_id' => $user_id,
+                            'isbn'    => $isbn,
+                            'book_name' => $bookInfo->title, 
+                            'book_img' => $bookInfo->image, 
+                            'words' => $data['words'], 
+                            'times' => 0, 
+                            'deadline' => '2016-05-10 09:47:03',
+                            'value' => $bookInfo->pages*0.3
+                            ]);
             if ($borrow_id) {
-                return $this->jsonResponse(false,$borrow_id,"添加成功");
+                $result = ['url'=>'/'.$type.'/'.$borrow_id];
+                return $this->jsonResponse(false,$result,"添加成功!");
             }
         }else{
-            return $this->jsonResponse(true,$book_exits,"书籍已存在！");
+            $result = ['url'=>'/'.$type.'/'.$book_exits->id];
+            return $this->jsonResponse(true,$result,"书籍已存在！");
         }
 	}
 

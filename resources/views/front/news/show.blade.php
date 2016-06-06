@@ -1,4 +1,4 @@
-@include('front.common.header')
+<?php include("../resources/views/front/header.php");?>
 <section class="bookInfo">
 	<p class="ownerWords">练习离开一个人，放下心中的忿恨和伤痛，我们渴望相爱相聚，也不惧怕离别。</p>
     <p class="ownerName">主人：LUCKY</p>
@@ -22,4 +22,4 @@
     	</li>
     </ul>
 </section>
-@include('front.common.footer')
+<?php include("../resources/views/front/footer.php");?>

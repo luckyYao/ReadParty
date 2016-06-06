@@ -62,10 +62,10 @@
         灯塔教会治理同工委员会</br>
         2016年5月17日
         </p>
-        <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_20150727193932.jpg?imageView2/2/w/800">
+        <!-- <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_20150727193932.jpg?imageView2/2/w/800">
         <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_20150805144710.jpg?imageView2/2/w/800">
         <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_3455.JPG?imageView2/2/w/800">
-        <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_3581.JPG?imageView2/2/w/800">
+        <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_3581.JPG?imageView2/2/w/800"> -->
     </section>
 </body>
 </html>
