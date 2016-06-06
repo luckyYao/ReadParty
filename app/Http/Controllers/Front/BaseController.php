@@ -179,5 +179,38 @@ class BaseController extends Controller
             ->get();
         return $result;
     }
+    //保存当前用户信息并返回user_id和user_name
+    public function getUser()
+    {
+        // 用户信息
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        if (!empty($token)) {
+            $userInfo = $this->tokenUserInfo($token);
+            $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+            if (empty($user_exits)) {
+                $result->user_id = DB::table('user')
+                    ->insertGetId([
+                        'name' => $userInfo->name,
+                        'sex'    => $userInfo->sex,
+                        'icon' => $userInfo->icon, 
+                        'school_id' => $userInfo->school_id, 
+                        'description' => $userInfo->description, 
+                        'email' => $userInfo->email, 
+                        'phone' => $userInfo->phone,
+                        'is_actived' => $userInfo->is_actived,
+                        'is_verified' => $userInfo->is_verified
+                        ]);
+                $result->user_pic  = $userInfo->icon;
+                $result->user_name  = $userInfo->name;
+            }else{
+                $result['user_id'] = $user_exits->id;
+                $result['user_pic'] = $user_exits->icon;
+                $result['user_name'] = $user_exits->name;
+            }
+        }else{
+            $result=[];
+        }
+        return $result;
+    }
     
 }

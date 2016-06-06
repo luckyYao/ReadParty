@@ -4,17 +4,17 @@
     $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
     // var_dump($result);exit();
 ?>
-<?php include("../resources/views/front/common/header.php");?>
+<?php include("../resources/views/front/header.php");?>
 <section class="padding tabs" style="background:#fff">
     <div class="label-box">
-	  <a class="<?=$result['type']=='borrow'?'label big current':'label big'?>" href="/book">借本书</a>
+	  <a class="<?=$result['type']=='borrow'?'label big current':'label big'?>" href="/">借本书</a>
 	  <span class="label middle">or</span>
 	  <a class="<?=$result['type']=='help'?'label big current':'label big'?>" href="/help">帮帮忙</a>
 	</div>
 	<div>
 		<span class="<?=$result['tags_current']=='all'?'label current':'label '?>">全部</span>
 		<?php foreach ($result['tags'] as $key => $value) :?>
-		<form action="/book" style="display:inline-block" method="post">
+		<form action="/tag/book" style="display:inline-block" method="post">
 	  		<input name='tag' type="text" class="hidden" value="<?=$value->name?>">
 	  		<input name='type' type="text" class="hidden" value="<?=$result['type']?>">
 			<input class="<?=$result['tags_current']==$value->name?'label current':'label '?>" type="submit" value="<?=$value->name?>">
@@ -70,4 +70,4 @@
 	<?php endforeach?>
 	<?php endif?>
 </section>
-<?php include("../resources/views/front/common/footer.php");?>
+<?php include("../resources/views/front/footer.php");?>
