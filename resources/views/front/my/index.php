@@ -2,7 +2,6 @@
     $title        = "拾光&nbsp;&bull;&nbsp;阅读";
     $description  = "燕大图书漂流";
     $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
-	// var_dump($result);exit();
 ?>
 <?php include("../resources/views/front/header.php");?>
 <section class="padding tabs" style="background:#fff">
@@ -45,18 +44,24 @@
 		  	<a href="/borrow/<?=$value->id?>">
 			    <img src="<?=$value->book_img?>" class="block">
 			    <h3><?=$value->book_name?></h3>
-			    <?php if(!empty($value->reading_name)) :?>
-			    <p>当前借阅:</br>
-				<?=$value->reading_name?>&nbsp;&nbsp;&nbsp;<?=$value->reading_phone?>
-			    </p>
+			    <?php if(!empty($value->reader_current)) :?>
+				    <?php if(count($value->reader_current)==2):?>
+				    	<p>漂流中</br>
+						from：<?=$value->reader_current[0]->user_name?>&nbsp;&nbsp;&nbsp;<?=$value->reader_current[0]->user_phone?></br>
+						to：<?=$value->reader_current[1]->user_name?>&nbsp;&nbsp;&nbsp;<?=$value->reader_current[1]->user_phone?>
+					    </p>
+					<?php else:?>
+						<p>当前位置</br>
+						<?=$value->reader_current[0]->user_name?>&nbsp;&nbsp;&nbsp;<?=$value->reader_current[0]->user_phone?>
+					    </p>
+					<?php endif?>
 				<?php else:?>
 				<p>还没有人借阅此书哦</p>
 				<?php endif?>
 		  	</a>
 		  	<hr>
 		  	<span class="label bg-mcolor">借出</span>
-		  	<span class="label">已读<?=$value->read_done?>人</span>
-		  	<span class="label">想读<?=$value->read_todo?>人</span>
+		  	<span class="label">等待<?=count($value->reader_next)?>人</span>
 		</div>
 		<?php endforeach?>
 		<?php endif?>		
@@ -65,23 +70,20 @@
 	<div id="book_borrow">
 		<?php if(!empty($result['book_borrow'])):?>
 		<?php foreach ($result['book_borrow'] as $key => $value) :?>
-	    <div class="item" style="background:<?=$value->state=='1'?'#ececec':'#fff'?>">
+	    <div class="item" style="background:<?=in_array($value->state,[1,2,3])?'#ececec':'#fff'?>">
 		  	<a href="/borrow/<?=$value->id?>">
 			    <img src="<?=$value->book_img?>" class="block">
-			    <h3 style="color:#7d2a42 !important;"><?=$value->book_name?></h3>
-			    <?php if($value->state=='1'):?>
-				    <?php if($value->read_todo>0)?>
-				    <p>下一个读者：</br>
-					<?=$value->readnext_name?>&nbsp;&nbsp;&nbsp;<?=$value->readnext_phone?>
-					</p>
-					<?php else:?>
-					<p>在您之后没有人排队</p>
-					<?php endif?>
+			    <h3 ><?=$value->book_name?></h3>
+			    <?php if(count($value->reader_current)==2):?>
+			    	<p>漂流中</br>
+					from：<?=$value->reader_current[0]->user_name?>&nbsp;&nbsp;&nbsp;<?=$value->reader_current[0]->user_phone?></br>
+					to：<?=$value->reader_current[1]->user_name?>&nbsp;&nbsp;&nbsp;<?=$value->reader_current[1]->user_phone?>
+				    </p>
 				<?php else:?>
-				<p>当前借阅:</br>
-				<?=$value->reading_name?>&nbsp;&nbsp;&nbsp;<?=$value->reading_phone?>
-			    </p>
-				<?php endif ?>
+					<p>当前位置</br>
+					<?=$value->reader_current[0]->user_name?>&nbsp;&nbsp;&nbsp;<?=$value->reader_current[0]->user_phone?>
+				    </p>
+				<?php endif?>
 		  	</a>
 		  	<hr>
 		  	<span class="label bg-mcolor">借入</span>
@@ -94,16 +96,34 @@
 	            case '1':
 	              $state = "在读";
 	              break;
+	            case '2':
+	              $state = "漂流(from)";
+	              break;
+	            case '3':
+	              $state = "漂流(to)";
+	              break;
 	            default:
 	              $state = "读过";
 	            }
 	        ?>
 		  	<span class="label bg-mcolor"><?=$state?></span>
 			<?php if($value->state=='1'):?>
-			<span class="button mcolor mid  right" >切换状态</span>
+			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->id?>','<?=!empty($value->reader_next)?$value->reader_next[0]->user_id:"0"?>',1)">开始漂流</span>
+			<?php elseif($value->state=='3'):?>
+			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->id?>','0',3)">接收</span>
+			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->id?>','0',2)">过了</span>
 			<?php endif?>
 		</div>
 		<?php endforeach?>
+		<!-- confirm -->
+		<div class="shadow" id="dialogue">
+		    <div class="shadowContent">
+		        <h4 class="mcolor">您好，<?=$result['user']['user_name']?></h4>
+		        <p id="state"></p>
+		        <p id="attention"></p>
+		        <h4 class="btn"><span onclick="hide('dialogue')" id="close">真麻烦，算了</span></h4>
+		    </div>
+		</div>
 		<?php endif?>
 	</div>
 	<!-- 求帮忙的书籍 -->
@@ -113,11 +133,11 @@
 	    <div class="item ">
 		  	<a href="/help/<?=$value->id?>">
 			    <img src="<?=$value->book_img?>" class="block">
-			    <h3 ><?=$value->book_name?></h3>
-			    <p><?=$value->words?></p>
+			    <h3 class="mcolor-help"><?=$value->book_name?></h3>
+			    <p><?=$value->is_done?'借书者</br>'.$value->helper_name.'&nbsp;&nbsp;'.$value->helper_phone:$value->words?></p>
 		  	</a>
 		  	<hr>
-		  	<span class="label bg-mcolor" >求帮忙</span>
+		  	<span class="label mcolor-help-bg" ><?=$value->is_done?'已借到':'求帮忙'?></span>
 		</div>
 		<?php endforeach?>
 		<?php endif?>
@@ -136,4 +156,53 @@
 			$("#"+$(this).attr('name')).show();
 		};
 	})
+	function showDialogue(borrow_id,next_id,type){
+		if (type==1) {
+			var sql_state = '您即将开始图书漂流，请认真阅读以下内容：';
+			var sql_attention = '1.请确认您的书籍已经读完。</br>\
+						        2.图书漂流期间您依然要对图书的安全负责哦。</br>\
+						        3.图书漂流到下一为读者手中的时候，请您尽快联系下一位读者转交图书</br>\
+						        4.图书成功漂流后，请嘱托对方将阅读状态改为“在读”，图书安全就交给对方负责喽';
+			var sql = '<span id="go" class="mcolor" onclick="changeSatate('+borrow_id+','+next_id+','+type+')">好的，了解</span>';
+			$("#state").html(sql_state);
+			$("#attention").html(sql_attention);
+			$("#dialogue .btn").append(sql);
+			$("#dialogue").show();
+		}else if(type==2){
+			var sql_state = '您即将错过阅读这本书哦：';
+			var sql_attention = '1.确认后您将排在时间轴的最后面重新等待阅读';
+			var sql = '<span id="go" class="mcolor" onclick="changeSatate('+borrow_id+','+next_id+','+type+')">好的，了解</span>';
+			$("#state").html(sql_state);
+			$("#attention").html(sql_attention);
+			$("#dialogue .btn").append(sql);
+			$("#dialogue").show();
+		}else{
+			var sql_state = '您即将结束这本书的漂流，请认真阅读以下内容：';
+			var sql_attention = '1.确认您已经拿到这本书，如果没有请打电话联系上一本读者拿书。</br>\
+								 2.在您阅读期间请对这本书的安全负责。';
+			var sql = '<span id="go" class="mcolor" onclick="changeSatate('+borrow_id+','+next_id+','+type+')">好的，了解</span>';
+			$("#state").html(sql_state);
+			$("#attention").html(sql_attention);
+			$("#dialogue .btn").append(sql);
+			$("#dialogue").show();
+		};
+	}
+	function changeSatate(borrow_id,next_id,type){
+		console.log(type);
+		hide('dialogue');
+		$.ajax({
+			url:'/state',
+			type:'post',
+			data:{'borrow_id':borrow_id,'next_id':next_id,'type':type},
+			dataType:'json',
+			success:function(data){
+				toast(data.message);
+				if (!data.error) window.location.reload();
+			},
+			error:function(data){
+				toast(data.message);
+			}
+		})
+	}
 </script>
+<div style="height:40px;"></div>

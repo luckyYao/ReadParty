@@ -55,10 +55,6 @@
 				<p>lucky:hah a</p>
 				<p>lucky:hah a</p>
 	    	</div> -->
-	    	<form class="commentBox">
-				<input type="text" name="content" class="left">
-				<input type="submit" value="ok" class="left">
-			</form>
 	    </div>
 		<?php endforeach?>
 		<?php endif?>		

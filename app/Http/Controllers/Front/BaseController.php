@@ -187,6 +187,7 @@ class BaseController extends Controller
         if (!empty($token)) {
             $userInfo = $this->tokenUserInfo($token);
             $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+            $result = [];
             if (empty($user_exits)) {
                 $result->user_id = DB::table('user')
                     ->insertGetId([

@@ -14,34 +14,41 @@
 </section>
 <?php endif?>
 <section>
-	<?php foreach ($result as $key => $value) :?>
-		<div class="item" style="padding-bottom:10px;">
-	    	<div class="newsItem">
-	    		<img class="userIcon" src="<?='http://timepicker.cn/'.$value->user_pic?>" >
-				<span><?=$value->user_name?></span>
-				<span style="font-size:12px;"><?=$value->create_at?></span>
-		    	<p style="margin:5px 0"><?=$value->content?></p>
-		    	<!-- <img class="bookCover" src="<?=$value->pic?>"> -->
-		    	<span class="right">+喜欢<?=$value->like?></span>
-		    	<span class="right highLight">+评论<?=$value->comments?></span>
-	    	</div>
-<!-- 	    	<div class="commentList clear">
-	    		<hr>
-				<span style="font-size:12px;">要笑娟</span>
-				<span style="font-size:12px;">2016-05-03  14:00</span>
+	<?php if(!empty($result)):?>
+		<?php foreach ($result as $key => $value) :?>
+			<div class="item" style="padding-bottom:10px;">
+		    	<div class="newsItem">
+		    		<img class="userIcon" src="<?='http://timepicker.cn/'.$value->user_pic?>" >
+					<span><?=$value->user_name?></span>
+					<span style="font-size:12px;"><?=$value->create_at?></span>
+			    	<p style="margin:5px 0"><?=$value->content?></p>
+			    	<!-- <img class="bookCover" src="<?=$value->pic?>"> -->
+			    	<span class="right">+喜欢<?=$value->like?></span>
+			    	<span class="right highLight">+评论<?=$value->comments?></span>
+		    	</div>
+	<!-- 	    	<div class="commentList clear">
+		    		<hr>
+					<span style="font-size:12px;">要笑娟</span>
+					<span style="font-size:12px;">2016-05-03  14:00</span>
 
-				<p style="margin:5px 0">你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你好</p>
-		    	<p class="clear highLight">共2条回复</p>
-		    	<hr>
-				<p>lucky:hah a</p>
-				<p>lucky:hah a</p>
-	    	</div> -->
-	    	<form class="commentBox">
-				<input type="text" name="content" class="left">
-				<input type="submit" value="ok" class="left">
-			</form>
-	    </div>
-	<?php endforeach?>
+					<p style="margin:5px 0">你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你好</p>
+			    	<p class="clear highLight">共2条回复</p>
+			    	<hr>
+					<p>lucky:hah a</p>
+					<p>lucky:hah a</p>
+		    	</div> -->
+		    	<form class="commentBox">
+					<input type="text" name="content" class="left">
+					<input type="submit" value="ok" class="left">
+				</form>
+		    </div>
+		<?php endforeach?>
+	<?php else:?>
+		<section class="emptyPage">
+			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/120">
+			<h3 class="mcolor">数据为空，快抢沙发吧</h3>
+		</section>
+	<?php endif?>
 </section>
 <?php include("../resources/views/front/footer.php");?>
 <script type="text/javascript">
