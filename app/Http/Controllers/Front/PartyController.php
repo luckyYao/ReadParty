@@ -11,6 +11,7 @@ use Validator;
 
 class PartyController extends BaseController
 {	
+    // 读书
     public function index()
     {
         $result['borrow'] = $this->getBooks('borrow');
@@ -29,7 +30,43 @@ class PartyController extends BaseController
         return view("front/book/index",['result'=>$result]);
     }
 
-    // 获取标签下的所有书
+    public function help($id)
+    {   
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        $userInfo = $this->tokenUserInfo($token);
+        $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+        $user_id = $user_exits->id;
+        $helpInfo = DB::table('help')
+            ->where('help.id',$id)
+            ->select('*')
+            ->first();
+        if(in_array($user_id,explode('-',$helpInfo->helpers))){
+            return $this->jsonResponse(true,[],"不可重复操作~");
+        }else{
+            $result = DB::table('help')
+                ->where('id', $id)
+                ->update(['times' => $helpInfo->times+1,'helpers' => $helpInfo->helpers.'-'.$user_id]);
+            return $this->jsonResponse(false,$user_exits,"操作成功~");
+        };
+    }
+
+    public function borrow($id)
+    {   
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        if (!empty($token)) {
+            $userInfo = $this->tokenUserInfo($token);
+            $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+            $user_id = $user_exits->id;
+            $result = DB::table('help')
+                ->where('id', $id)
+                ->update(['is_done' => 1,'helper_id' => $user_id]);
+            return $this->jsonResponse(false,[],"操作成功~");
+        }else{
+            $url = env('PTIME_URL').'/oauth2/auth?client_id='.env('CLIENT_ID').'&redirect_uri='.urlencode('http://'.$_SERVER['HTTP_HOST']).'&response_type=token'; 
+            return $this->jsonResponse(true,$url,"请登录~");
+        }
+    }
+
     public function tagBookIndex()
     {
         $param = Request::all();
@@ -59,7 +96,6 @@ class PartyController extends BaseController
         return view("front/book/index",['result'=>$result]);
     }
     
-    // 添加一本书
     public function addBook()
     {
         $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
@@ -72,7 +108,6 @@ class PartyController extends BaseController
         }
     }
 
-    // 获取借书/帮忙的详情
     public function show($type,$id)
     {
         // 获取本书基本信息
@@ -93,166 +128,57 @@ class PartyController extends BaseController
         $result->user_current = empty($userInfo->name)?'':$userInfo->name;
 
         // 获取本书时间轴数据
-        $table = 'timeline_'.$type;
-        $timeline = DB::table($table)
-            ->where($table.'.'.$type.'_id',$id)
-            ->join('user', $table.'.user_id', '=', 'user.id')
-            ->where($table.'.is_delete',0)
-            ->where($table.'.is_show',1)
-            ->select($table.'.*','user.name as user_name')
-            ->orderBy($table.'.create_at','DESC')
-            ->get();
-        $result->timeline = $timeline;
+        if ($type=='borrow') {
+           $table = 'timeline_'.$type;
+            $timeline = DB::table($table)
+                ->where($table.'.'.$type.'_id',$id)
+                ->join('user', $table.'.user_id', '=', 'user.id')
+                ->where($table.'.is_delete',0)
+                ->select($table.'.*','user.name as user_name')
+                ->orderBy($table.'.create_at','DESC')
+                ->get();
+            $result->timeline = $timeline;
+        }else{
+            $users_id=explode('-',$result->helpers);
+            $result->helpers = DB::table('user')
+                   ->wherein('user.id',$users_id)
+                   ->select('*')
+                   ->get();
+        }
         return view("front/book/show",['result'=>$result]);
     }
 
-    // my
-    public function myBook()
-    {
-        $result['user'] = $this->getUser();
-        if (!empty($result['user'])) {
-            $result['book_mine'] = DB::table('borrow')
-            ->where('borrow.user_id',$result['user']['user_id'])
-            ->where('borrow.is_delete',0)
-            ->where('borrow.is_show',1)
-            ->select('borrow.*')
-            ->orderBy('borrow.create_at','DESC')
-            ->get();
-            foreach ($result['book_mine'] as $key => $value1) {
-                $timeline = DB::table('timeline_borrow')
-                ->where('timeline_borrow.borrow_id',$value1->id)
-                ->join('user', 'timeline_borrow.user_id', '=', 'user.id')
-                ->where('timeline_borrow.is_delete',0)
-                ->where('timeline_borrow.is_show',1)
-                ->select('timeline_borrow.state','user.name as user_name','user.phone as user_phone')
-                ->orderBy('timeline_borrow.create_at','DESC')
-                ->get();
-                $read_done = 0;
-                $read_todo = 0;
-                $reading_name = '';
-                $reading_phone = '';
-                foreach ($timeline as $key => $value2) {
-                    switch ($value2->state)
-                    {
-                    case '0':
-                      $read_todo++;
-                      break;  
-                    case '1':
-                      $reading_name = $value2->user_name;
-                      $reading_phone = $value2->user_phone;
-                      break;
-                    default:
-                      $read_done++;
-                    }
-                }
-                $value1->read_done = $read_done;
-                $value1->reading_name = $reading_name;
-                $value1->reading_phone = $reading_phone;
-                $value1->read_todo = $read_todo;
-            }
-            // var_dump($result['book_mine'][1]);exit();
-            $result['book_borrow'] = DB::table('timeline_borrow')
-                    ->join('borrow', 'timeline_borrow.borrow_id', '=', 'borrow.id')
-                    ->where('timeline_borrow.user_id',$result['user']['user_id'])
-                    ->where('timeline_borrow.is_delete',0)
-                    ->where('timeline_borrow.is_show',1)
-                    ->select('timeline_borrow.words as my_words','timeline_borrow.state','borrow.*')
-                    ->orderBy('timeline_borrow.create_at','DESC')
-                    ->get();
-            foreach ($result['book_borrow'] as $key => $value1) {
-                $timeline = DB::table('timeline_borrow')
-                ->where('timeline_borrow.borrow_id',$value1->id)
-                ->join('user', 'timeline_borrow.user_id', '=', 'user.id')
-                ->where('timeline_borrow.is_delete',0)
-                ->where('timeline_borrow.is_show',1)
-                ->select('timeline_borrow.state','user.name as user_name','user.phone as user_phone')
-                ->orderBy('timeline_borrow.create_at','DESC')
-                ->get();
-                $read_done = 0;
-                $read_todo = 0;
-                $reading_name = '';
-                $reading_phone = '';
-                $readnext_name = '';
-                $readnext_phone = '';
-                $reading_key = 0;
-                foreach ($timeline as $key2 => $value2) {
-                    switch ($value2->state)
-                    {
-                    case '0':
-                      $read_todo++;
-                      break;  
-                    case '1':
-                      $reading_name = $value2->user_name;
-                      $reading_phone = $value2->user_phone;
-                      $reading_key = $key2;
-                      break;
-                    default:
-                      $read_done++;
-                    }
-                }
-                $value1->read_done = $read_done;
-                $value1->reading_name = $reading_name;
-                $value1->reading_phone = $reading_phone;
-                $value1->read_todo = $read_todo;
-                $value1->reader_num = count($timeline);
-                $value1->a = $key;
-                if ($read_todo>0&&!empty($timeline[$reading_key+1])) {
-                    $value1->readnext_name = $timeline[$reading_key+1]->user_name;
-                    $value1->readnext_phone = $timeline[$reading_key+1]->user_phone;
-                }
-            }
-            // var_dump($result['book_borrow']);exit();
-
-            $result['book_help'] = DB::table('help')
-                    ->where('help.user_id',$result['user']['user_id'])
-                    ->where('help.is_delete',0)
-                    ->where('help.is_show',1)
-                    ->select('help.*')
-                    ->orderBy('help.create_at','DESC')
-                    ->get();
-        }
-        return view("front/my/index",['result'=>$result]);
-    }
-    public function myNews()
-    {
-        $result['user'] = $this->getUser();
-        if (!empty($result['user'])) {
-            $result['news_mine'] = DB::table('news')
-                ->join('user', 'news.user_id', '=', 'user.id')
-                ->where('news.user_id',$result['user']['user_id'])
-                ->where('news.is_delete',0)
-                ->where('news.is_show',1)
-                ->select('news.*','user.name as user_name','user.icon as user_pic')
-                ->orderBy('news.create_at','DESC')
-                ->get();
-        }
-        return view("front/my/news",['result'=>$result]);
-    }
-
-
-    // 添加时间点 借书/帮忙
     public function timeLineAdd($book_id)
     {   
         $user = $this->getUser();
         $param = Request::all();
         $timeline_exits = DB::table('timeline_borrow')->where('user_id',$user['user_id'])->where('borrow_id',$book_id)->select('*')->first();
-        if (empty($timeline_exits)) {
+        if (empty($timeline_exits)) { 
+            $states = DB::table('timeline_borrow')
+                    ->where('borrow_id',$book_id)
+                    ->wherein('state',[1,2,3])
+                    ->select('state')
+                    ->get();
+            if (in_array('1', $states) || in_array('3', $states)) {
+                $state = 0;
+            }else{
+                $state = 3;
+            };
             $id = DB::table('timeline_borrow')->insertGetId([
                 'borrow_id' => $book_id,
                 'user_id'   => $user['user_id'],
                 'user_pic'  => $user['user_pic'],
-                'state'     => $param['state'],
+                'state'     => $state,
                 'words'     => $param['words']   
                 ]);
             if ($id) 
-                return $this->jsonResponse(false,$id,"添加成功");
+                return $this->jsonResponse(false,$state,"添加成功");
             else
                 return $this->jsonResponse(true,[],"添加失败"); 
         }else
             return $this->jsonResponse(true,[],"您已经申请借过此书"); 
     }
 
-    // 更新借书/帮忙的时间点
     public function timeLineUpdate($type,$book_id,$id)
     {
         $param  = Request::all();
@@ -262,5 +188,123 @@ class PartyController extends BaseController
                 ->update($param);
         if ($result) return $this->jsonResponse(false,[],"修改成功");
         else  return $this->jsonResponse(true,[],"修改失败");
+    }
+
+    public function douban(){
+        $data = Request::all();
+        $isbn = $data['isbn'];
+        $bookInfo = json_decode($this->httpRequest('https://api.douban.com/v2/book/isbn/'.$isbn));
+        return $this->jsonResponse(false,$bookInfo,"书籍详情");
+    }
+
+    public function store($type)
+    {   
+        $data = Request::all();
+        $isbn = $data['isbn'];
+        // 获取用户信息
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        $userInfo = $this->tokenUserInfo($token);
+        $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+        if (empty($user_exits)) {
+            $user_id = DB::table('user')
+                ->insertGetId([
+                    'name' => $userInfo->name,
+                    'sex'    => $userInfo->sex,
+                    'icon' => $userInfo->icon, 
+                    'school_id' => $userInfo->school_id, 
+                    'description' => $userInfo->description, 
+                    'email' => $userInfo->email, 
+                    'phone' => $userInfo->phone,
+                    'is_actived' => $userInfo->is_actived,
+                    'is_verified' => $userInfo->is_verified
+                    ]);
+        }else{
+            $user_id = $user_exits->id;
+        }
+        // 获取图书信息
+        $bookInfo = json_decode($this->httpRequest('https://api.douban.com/v2/book/isbn/'.$isbn));
+
+        //如果是第一次分享这本书则保存该书的标签
+        $tags = $bookInfo->tags;
+        $is_tags =  DB::table('tag')->where('isbn',$isbn)->select('*')->first();
+        if (empty($is_tags)) {
+            foreach ($tags as $key => $value) {
+                DB::table('tag')
+                ->insert(
+                    ['isbn' => $isbn,
+                     'name' => $value->name]
+                );
+            }
+        }
+        // 将图书基本信息放到对应的表里面
+        $book_exits  = DB::table($type)->where('user_id',$user_id)->where('isbn',$isbn)->first();
+        if (empty($book_exits)) {
+            if ($type == 'help') {
+                $borrow_exits  = DB::table('borrow')->where('user_id',$user_id)->where('isbn',$isbn)->first();
+                if (!empty($borrow_exits)) {
+                    $result = ['url'=>'/borrow/'.$borrow_exits->id];
+                    return $this->jsonResponse(true,$result,"派对上已经有这本书了~");
+                }else{
+                    $help_id = DB::table($type)
+                        ->insertGetId([
+                            'user_id' => $user_id,
+                            'isbn'    => $isbn,
+                            'book_name' => $bookInfo->title, 
+                            'book_img' => $bookInfo->image, 
+                            'words' => $data['words'], 
+                            'times' => 0
+                            ]);
+                    $result = ['id'=> $help_id];
+                    return $this->jsonResponse(true,$result,"帮助请求发布成功~");
+                }
+            }
+
+            $borrow_id = DB::table($type)
+                        ->insertGetId([
+                            'user_id' => $user_id,
+                            'isbn'    => $isbn,
+                            'book_name' => $bookInfo->title, 
+                            'book_img' => $bookInfo->image, 
+                            'words' => $data['words'], 
+                            'times' => 0
+                            ]);
+            if ($borrow_id) {
+                $result = ['url'=>'/'.$type.'/'.$borrow_id];
+                DB::table('timeline_borrow')->insertGetId([
+                'borrow_id' => $borrow_id,
+                'user_id'   => $user_id,
+                'user_pic'  => $userInfo->icon,
+                'state'     => 2,
+                'words'     => '图书开始漂流'   
+                ]);
+                return $this->jsonResponse(false,$result,"添加成功!");
+            }
+        }else{
+            $result = ['url'=>'/'.$type.'/'.$book_exits->id];
+            return $this->jsonResponse(true,$result,"书籍已存在！");
+        }
+    }
+
+    public function tagIndex()
+    {
+        $result = DB::table('tag')
+            ->where('tag.is_delete',0)
+            ->where('tag.is_show',1)
+            ->distinct()
+            ->select('name')
+            ->get();
+        var_dump($result);exit();
+    }
+
+    public function bookTagIndex($isbn)
+    {
+        $result = DB::table('tag')
+            ->where('tag.isbn',$isbn)
+            ->where('tag.is_delete',0)
+            ->where('tag.is_show',1)
+            ->distinct()
+            ->select('name')
+            ->get();
+        var_dump($result);exit();
     }
 }

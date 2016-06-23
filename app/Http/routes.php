@@ -16,14 +16,6 @@ $app->get('/admin', function()
 		return view('admin.login');
 	return view('admin.admin');
 });
-$app->get('/goodNews', function()
-{	
-	return view('front.goodNews');
-});
-$app->get('/yaping', function()
-{	
-	return view('front.yaping');
-});
 
 session_start();
 if(isset($_GET['token'])){
@@ -39,40 +31,38 @@ if(isset($_GET['token'])){
 }
 
 $app->group(array('prefix'=>'/'),function() use ($app){
-	
-	//用户
-	$app->post('/login',                								'App\Http\Controllers\Front\UserController@login');
-	$app->post('/pass',                   								'App\Http\Controllers\Front\UserController@pass');
-	$app->post('/store',                   								'App\Http\Controllers\Front\UserController@store');
-	
-	// 借书+求帮忙
-	$app->get('/',                						    	    'App\Http\Controllers\Front\PartyController@index');
+
+	// 读书
+	$app->get('/',                						    	    	'App\Http\Controllers\Front\PartyController@index');
 	$app->get('/help',                						    	    'App\Http\Controllers\Front\PartyController@indexHelp');
 	$app->get('/book/add',                 					    		'App\Http\Controllers\Front\PartyController@addBook');
-	$app->post('/tag/book',                 					    		'App\Http\Controllers\Front\PartyController@tagBookIndex');
 	$app->get('/{type}/{id}',                   						'App\Http\Controllers\Front\PartyController@show');
+	$app->post('/book-tag',                 					    	'App\Http\Controllers\Front\PartyController@tagBookIndex');
+	$app->post('/help/{id}',                 					    	'App\Http\Controllers\Front\PartyController@help');
+	$app->post('/borrow/{id}',                 					    	'App\Http\Controllers\Front\PartyController@borrow');
+	
 	$app->post('borrow/{book_id}/timeline',                 			'App\Http\Controllers\Front\PartyController@timeLineAdd');
 	$app->post('{type}/{book_id}/timeline/{id}',                		'App\Http\Controllers\Front\PartyController@timeLineUpdate');
 
-	// news
+	$app->post('/douban',                 					        	'App\Http\Controllers\Front\PartyController@douban');
+	$app->post('/book/{type}',                 					        'App\Http\Controllers\Front\PartyController@store');
+	
+	$app->get('/tag',                 					        		'App\Http\Controllers\Front\PartyController@tagIndex');
+	$app->get('/book/{isbn}/tag',                 					    'App\Http\Controllers\Front\PartyController@bookTagIndex');
+	
+
+	// 分享
 	$app->post('news',                 					         		'App\Http\Controllers\Front\NewsController@store');
 	$app->get('news',                						         	'App\Http\Controllers\Front\NewsController@index');
 	$app->delete('news/{id}',                						    'App\Http\Controllers\Front\NewsController@delete');
-
-	// comments 等待做ing
-	$app->post('news/{id}/comments',                 					'App\Http\Controllers\Front\CommentsController@store');
-	$app->get('news/{id}//comments',                					'App\Http\Controllers\Front\CommentsController@index');
-
-	// 发布分享书或求帮忙信息
-	$app->post('/douban',                 					        'App\Http\Controllers\Front\BookController@douban');
-	$app->post('/book/{type}',                 					        'App\Http\Controllers\Front\BookController@store');
+	$app->post('news/{id}/comments',                 					'App\Http\Controllers\Front\NewsController@store');
+	$app->get('news/{id}//comments',                					'App\Http\Controllers\Front\NewsController@index');
 	
-	$app->get('/tag',                 					        	'App\Http\Controllers\Front\BookController@tagIndex');
-	$app->get('/book/{isbn}/tag',                 					    'App\Http\Controllers\Front\BookController@bookTagIndex');
 
-	// 我的XXX
-	$app->get('/myBook',                 					    'App\Http\Controllers\Front\PartyController@myBook');
-	$app->get('/myNews',                 					    'App\Http\Controllers\Front\PartyController@myNews');
+	// 个人
+	$app->get('/myBook',                 					    		'App\Http\Controllers\Front\MineController@myBook');
+	$app->get('/myNews',                 					    		'App\Http\Controllers\Front\MineController@myNews');
+	$app->post('/state',                 					    		'App\Http\Controllers\Front\MineController@updateState');
 });
 
 $api = app('Dingo\Api\Routing\Router');

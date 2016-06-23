@@ -18,6 +18,11 @@
     <link rel="stylesheet" href="http://source.timepicker.cn/static/css/ptime_v0.4.min.css">
     <link rel="stylesheet" href="/stylesheets/ionicons.css">
     <link rel="stylesheet" href="/stylesheets/screen.css">
+    <style type="text/css">
+    html,body{
+        height: 100%;
+    }
+    </style>
 </head>
 <body class="agent-<?=getUserAgent()?>">
     <!--头部-->

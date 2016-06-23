@@ -46,8 +46,7 @@
 	</div>
 	<div class="step" id="stepWords" >
 		<h1>说点什么给看到这本书的人吧</h1>
-		<textarea  name="words" rows="4" placeholder="你好，陌生人，我最喜欢的书分享给你，请认
-        真阅读哦"></textarea>
+		<textarea  name="words" rows="4" placeholder="你好，陌生人，我最喜欢的书分享给你，请认真阅读哦"></textarea>
 		<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
 		<div class="step-button" onclick="showDialogue()">
 			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/60">
