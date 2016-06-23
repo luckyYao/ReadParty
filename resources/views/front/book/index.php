@@ -64,6 +64,7 @@
 		  	<form action="/book-tag" style="display:inline-block" method="post">
 		  		<input name='tag' type="text" class="hidden" value="<?=$value->name?>">
 		  		<input name='type' type="text" class="hidden" value="help" style="width:0">
+
 				<input class="label" type="submit" value="<?=$value->name?>">
 		  	</form>
 			<?php endforeach?>
@@ -76,4 +77,4 @@
 	</section>
 	<?php endif?>
 </section>
-<?php include("../resources/views/front/footer.php");?>
+

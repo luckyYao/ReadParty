@@ -57,10 +57,11 @@
         <p>若您有任何疑问，请随时咨询将此信交在您手里的弟兄/姐妹，或直接联系灯塔教会福音宣教部负责人陈晓霞姊妹（手机：+86 18833876209 微信Wechat：RitaChenQHD）。</p>
         <p>以上信息也同样鼓励您向自己所非常信任的弟兄姊妹，或所在团契、教会分享，欢迎各位肢体以代祷及支持来加入我们今年的暑期短宣团队，一起同工！</p>
         <p>愿主耶稣基督的恩惠，神的慈爱，圣灵的感动，常与我们众人同在，直到永远！阿们！</p>
+        <!-- <img src="http://7xtan3.com1.z0.glb.clouddn.com/logo.png?webImage/2/2/120" style="float:right;width:60px;margin-left:15px;"> -->
         <p style="text-align:right">灯塔教会福音宣教部及</br>
         灯塔教会治理同工委员会</br>
         2016年5月17日
-        </p>
+        </p><p style="text-align:center">(2015年照片)</p>
         <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/4.JPG?imageView2/2/w/800">
         <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/3.JPG?imageView2/2/w/800">
         <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/2.JPG?imageView2/2/w/800">
@@ -68,3 +69,4 @@
     </section>
 </body>
 </html>
+
