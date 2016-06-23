@@ -61,10 +61,11 @@
         <p style="text-align:right">灯塔教会福音宣教部及</br>
         灯塔教会治理同工委员会</br>
         2016年5月17日
-        </p>
-  <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_3455.JPG?imageView2/2/w/800">
-        <img style="width:100%" src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/IMG_3581.JPG?imageView2/2/w/800">
-        <p style="text-align:center">(2015年照片)</p>
+        </p><p style="text-align:center">(2015年照片)</p>
+        <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/4.JPG?imageView2/2/w/800">
+        <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/3.JPG?imageView2/2/w/800">
+        <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/2.JPG?imageView2/2/w/800">
+        <img src="http://7xtan3.com1.z0.glb.clouddn.com/lcc/5.jpg?imageView2/2/w/800">
     </section>
 </body>
 </html>
