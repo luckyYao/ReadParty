@@ -5,6 +5,11 @@
     // var_dump($result);exit();
 ?>
 <?php include("../resources/views/front/header.php");?>
+<style type="text/css">
+    body{
+        background: #fff;
+    }
+</style>
 <section class="bookInfo">
 	<p class="<?= empty($result->timeline)?'ownerWords mcolor-help':'ownerWords'?>"><?=$result->words?></p>
     <p class="<?= empty($result->timeline)?'ownerName mcolor-help':'ownerName'?>">主人：<?=$result->user_name?></p>
@@ -117,7 +122,6 @@
         }else{
             return true;
         };
-
     }
     function showDialogueForm(){
         $("#dialogue").hide();
@@ -178,17 +182,21 @@
         })
     }
     function borrow(id){
-        $.ajax({
-            url:"/borrow/"+id,
-            type:"post",
-            async:false,
-            success:function(data){
-                if (data.error) window.location.href = data.result;
-                toast(data.message);
-            },
-            error:function(){
-                toast(data.message);
-            }
-        })
+        var r=confirm("确定要借书给他？");
+        if (r==true){
+            $.ajax({
+                url:"/borrow/"+id,
+                type:"post",
+                async:false,
+                success:function(data){
+                    if (data.error) window.location.href = data.result
+                    else window.location.reload();
+                    toast(data.message);
+                },
+                error:function(){
+                    toast(data.message);
+                }
+            })
+        }
     }
 </script>
