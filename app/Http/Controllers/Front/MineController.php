@@ -78,6 +78,7 @@ class MineController extends BaseController
             $result['book_help'] = DB::table('help')
                     ->join('user', 'help.user_id', '=', 'user.id')
                     ->where('help.user_id',$result['user']['user_id'])
+                    ->orwhere('help.helper_id',$result['user']['user_id'])
                     ->where('help.is_delete',0)
                     ->where('help.is_show',1)
                     ->select('help.*','user.name as helper_name','user.phone as helper_phone')

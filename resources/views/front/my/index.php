@@ -2,6 +2,7 @@
     $title        = "拾光&nbsp;&bull;&nbsp;阅读";
     $description  = "燕大图书漂流";
     $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
+    // var_dump($result);exit();
 ?>
 <?php include("../resources/views/front/header.php");?>
 <section class="padding tabs" style="background:#fff">
@@ -137,7 +138,11 @@
 			    <p><?=$value->is_done?'借书者</br>'.$value->helper_name.'&nbsp;&nbsp;'.$value->helper_phone:$value->words?></p>
 		  	</a>
 		  	<hr>
+		  	<?php if($result['user']['user_id']!=$value->user_id):?>
+		  	<span class="label mcolor-help-bg" >助人为乐</span>
+		  	<?php else:?>
 		  	<span class="label mcolor-help-bg" ><?=$value->is_done?'已借到':'求帮忙'?></span>
+		  	<?php endif?>
 		</div>
 		<?php endforeach?>
 		<?php endif?>
