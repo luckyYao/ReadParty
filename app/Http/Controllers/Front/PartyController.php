@@ -266,6 +266,7 @@ class PartyController extends BaseController
                             'book_name' => $bookInfo->title, 
                             'book_img' => $bookInfo->image, 
                             'words' => $data['words'], 
+                            'value' => $bookInfo->price, 
                             'times' => 0
                             ]);
             if ($borrow_id) {

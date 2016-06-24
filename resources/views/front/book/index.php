@@ -10,7 +10,7 @@
 	  <span class="label middle">or</span>
 	  <a class="<?=$result['type']=='help'?'label big mcolor-help-bg':'label big'?>" href="/help">帮帮忙</a>
 	</div>
-<!-- 	<div>
+	<div>
 		<span class="<?=$result['tags_current']=='all'?'label current':'label '?>">全部</span>
 		<?php foreach ($result['tags'] as $key => $value) :?>
 		<form action="/tag/book" style="display:inline-block" method="post">
@@ -19,7 +19,7 @@
 			<input class="<?=$result['tags_current']==$value->name?'label current':'label '?>" type="submit" value="<?=$value->name?>">
 	  	</form>
 		<?php endforeach?>
-	</div> -->
+	</div>
 	<?php if(!empty($result['borrow'])):?>
     <div class="searchBox">
         <input type="text" class="search">
@@ -77,4 +77,4 @@
 	</section>
 	<?php endif?>
 </section>
-
+<?php include("../resources/views/front/footer.php");?>

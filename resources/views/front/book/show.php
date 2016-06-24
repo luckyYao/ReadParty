@@ -67,6 +67,7 @@
     <div class="bookValue clear mcolor-help-bg" onclick="borrow(<?=$result->id?>)">有这本书？借给他</div>
     <?php else:?>
     <div class="bookValue clear mcolor-help-bg">书已经借到，谢谢各位！</div>
+    <?php endif?>
     <p>帮忙借书的人越多，借到书的概率越大哦~，目前已有<span class="mcolor-help" style="font-size:18px">&nbsp;<?=$result->times?>&nbsp;</span>人帮他借书了</p>
     <p style="margin: 10px 0 5px;" class="mcolor-help">以下同学正在帮他借书：</p>
     <hr>
@@ -76,12 +77,11 @@
         <span class="name"><?=$value->name?></span>
     </div>
     <?php endforeach?>
-        <?php if(!$result->is_done):?>
-        <div class="header-box" id="toHelp" onclick="help(<?=$result->id?>)">
-            <img class="header" src="/img/plus.png" style="padding: 7px;box-sizing: border-box;box-shadow: 0px 0px 5px #76862e ;">
-            <span class="name" >帮助他</span>
-        </div>
-        <?php endif?>
+    <?php if(!$result->is_done):?>
+    <div class="header-box" id="toHelp" onclick="help(<?=$result->id?>)">
+        <img class="header" src="/img/plus.png" style="padding: 7px;box-sizing: border-box;box-shadow: 0px 0px 5px #76862e ;">
+        <span class="name" >帮助他</span>
+    </div>
     <?php endif?>
 </section>
 <!-- 课表详情对话框 -->
