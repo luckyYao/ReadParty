@@ -13,7 +13,7 @@
 	<div>
 		<span class="<?=$result['tags_current']=='all'?'label current':'label '?>">全部</span>
 		<?php foreach ($result['tags'] as $key => $value) :?>
-		<form action="/tag/book" style="display:inline-block" method="post">
+		<form action="/book-tag" style="display:inline-block" method="post">
 	  		<input name='tag' type="text" class="hidden" value="<?=$value->name?>">
 	  		<input name='type' type="text" class="hidden" value="<?=$result['type']?>">
 			<input class="<?=$result['tags_current']==$value->name?'label current':'label '?>" type="submit" value="<?=$value->name?>">

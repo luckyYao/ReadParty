@@ -76,7 +76,7 @@ class MineController extends BaseController
             }
             // 求帮忙的书籍
             $result['book_help'] = DB::table('help')
-                    ->join('user', 'help.helper_id', '=', 'user.id')
+                    ->join('user', 'help.user_id', '=', 'user.id')
                     ->where('help.user_id',$result['user']['user_id'])
                     ->where('help.is_delete',0)
                     ->where('help.is_show',1)

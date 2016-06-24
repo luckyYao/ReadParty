@@ -19,8 +19,11 @@
     <link rel="stylesheet" href="/stylesheets/ionicons.css">
     <link rel="stylesheet" href="/stylesheets/screen.css">
     <style type="text/css">
-    html,body{
+    html{
         height: 100%;
+    }
+    body{
+        min-height: 100%;
     }
     </style>
 </head>

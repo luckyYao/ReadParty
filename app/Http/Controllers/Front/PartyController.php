@@ -33,21 +33,26 @@ class PartyController extends BaseController
     public function help($id)
     {   
         $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
-        $userInfo = $this->tokenUserInfo($token);
-        $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
-        $user_id = $user_exits->id;
-        $helpInfo = DB::table('help')
-            ->where('help.id',$id)
-            ->select('*')
-            ->first();
-        if(in_array($user_id,explode('-',$helpInfo->helpers))){
-            return $this->jsonResponse(true,[],"不可重复操作~");
+        if (!empty($token)) {
+            $userInfo = $this->tokenUserInfo($token);
+            $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+            $user_id = $user_exits->id;
+            $helpInfo = DB::table('help')
+                ->where('help.id',$id)
+                ->select('*')
+                ->first();
+            if(in_array($user_id,explode('-',$helpInfo->helpers))){
+                return $this->jsonResponse(true,[],"不可重复操作~");
+            }else{
+                $result = DB::table('help')
+                    ->where('id', $id)
+                    ->update(['times' => $helpInfo->times+1,'helpers' => $helpInfo->helpers.'-'.$user_id]);
+                return $this->jsonResponse(false,$user_exits,"操作成功~");
+            };
         }else{
-            $result = DB::table('help')
-                ->where('id', $id)
-                ->update(['times' => $helpInfo->times+1,'helpers' => $helpInfo->helpers.'-'.$user_id]);
-            return $this->jsonResponse(false,$user_exits,"操作成功~");
-        };
+            $url = env('PTIME_URL').'/oauth2/auth?client_id='.env('CLIENT_ID').'&redirect_uri='.urlencode('http://'.$_SERVER['HTTP_HOST']).'&response_type=token'; 
+            return $this->jsonResponse(true,$url,"请登录~");
+        }
     }
 
     public function borrow($id)
@@ -254,7 +259,7 @@ class PartyController extends BaseController
                             'words' => $data['words'], 
                             'times' => 0
                             ]);
-                    $result = ['id'=> $help_id];
+                    $result = ['url'=> '/help/'.$help_id];
                     return $this->jsonResponse(true,$result,"帮助请求发布成功~");
                 }
             }
@@ -276,7 +281,8 @@ class PartyController extends BaseController
                 'user_id'   => $user_id,
                 'user_pic'  => $userInfo->icon,
                 'state'     => 2,
-                'words'     => '图书开始漂流'   
+                'words'     => '图书开始漂流',   
+                'is_show'     => 0   
                 ]);
                 return $this->jsonResponse(false,$result,"添加成功!");
             }
