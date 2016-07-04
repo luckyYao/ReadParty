@@ -3,6 +3,7 @@
     $description  = "燕大图书漂流";
     $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
      // var_dump($result);exit();
+    
 ?>
 <?php include("../resources/views/front/header.php");?>
 <style type="text/css">
@@ -32,9 +33,17 @@
 		</div>
 	</div>
 	<div class="step" id="stepIsbn">
-		<h1>请输入书籍的&nbsp;isbn&nbsp;号</h1>
-		<input type="text" name="isbn" oninput="getBookInfo()">
-		<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
+		<div>
+			<h1>请输入书籍的&nbsp;isbn&nbsp;号</h1>
+			<input type="text" name="isbn" oninput="getBookInfo()">
+			<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
+			<?php 
+				$agent = getUserAgent();
+				if ($agent=='other'):
+			?>
+			<p class="tip mcolor" onclick="codeScan">你也可以：扫描书籍条形码获取isbn号</p>
+			<?php endif?>
+		</div>
 		<div class="bookInfo">
 			
 		</div>
@@ -134,7 +143,6 @@
 		$(this).siblings().removeClass('current');
 		kset('option',$(this).attr('name'));
 	})
-
 	function addBook(){
 		var data = {
 			'isbn':kget('isbn'),
@@ -191,5 +199,22 @@
 			$("#attention").append(attention);
 		};
 		$("#dialogue").show();
+	}
+
+	// 一维码/二维码扫描
+	function codeScan () {
+		var payload = {
+			type: 'CodeScan',
+			content: {
+			}
+		};
+		window.webkit.messageHandlers.webViewApp.postMessage(payload); //ios
+	}
+
+	// 一维码/二维码扫描结果
+	function codeScanResult (result) {
+		console.log(result);
+		$("input[name='isbn']").val(result);
+		getBookInfo();
 	}
 </script>
