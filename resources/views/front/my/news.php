@@ -2,7 +2,7 @@
     $title        = "拾光&nbsp;&bull;&nbsp;阅读";
     $description  = "燕大图书漂流";
     $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
-	// var_dump($result);exit();
+	// var_dump($result['news_mine'][0]);exit();
 ?>
 <?php include("../resources/views/front/header.php");?>
 <section class="padding tabs" style="background:#fff">
@@ -11,6 +11,7 @@
 			body{
 				padding-bottom: 0;
 		    	box-shadow: none;
+		    	background: #fff;
 			}
 		</style>
 		<img style="width:100px;margin:80px auto 20px;display:block;" src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/200">
@@ -39,25 +40,51 @@
 	    		<img class="userIcon" src="<?='http://timepicker.cn/'.$value->user_pic?>" >
 				<span><?=$value->user_name?></span>
 				<span style="font-size:12px;"><?=$value->create_at?></span>
+				<span class="right mcolor" onclick="commentDelete('<?=$value->id?>')">删除</span>
 		    	<p style="margin:5px 0"><?=$value->content?></p>
 		    	<!-- <img class="bookCover" src="<?=$value->pic?>"> -->
-		    	<span class="right">+喜欢<?=$value->like?></span>
-		    	<span class="right highLight">+评论<?=$value->comments?></span>
+		    	<span class="right" onclick="starCreate('<?=$value->id?>')">喜欢&nbsp;<span id="like_<?=$value->id?>"><?=$value->commentsCount->star_count?></span></span>
+		    	<span class="right highLight">评论&nbsp;<?=$value->commentsCount->comment_count?></span>
 	    	</div>
-<!-- 	    	<div class="commentList clear">
+			<div class="commentList clear">
 	    		<hr>
-				<span style="font-size:12px;">要笑娟</span>
-				<span style="font-size:12px;">2016-05-03  14:00</span>
-
-				<p style="margin:5px 0">你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你你好，你好</p>
-		    	<p class="clear highLight">共2条回复</p>
-		    	<hr>
-				<p>lucky:hah a</p>
-				<p>lucky:hah a</p>
-	    	</div> -->
+	    		<?php foreach ($value->comments as $key => $value2) :?>
+				<p style="margin:5px 0;color:#000"><span style="font-size:12px;" class="mcolor">
+					<?=$value2->user_name?></span>
+					<?php if(!empty($value2->replied_user_name)):?>
+					<?='回复&nbsp;<span class="mcolor">'.$value2->replied_user_name.'</span>：'.$value2->content?>
+					<?php else:?>
+					<?='：'.$value2->content?>
+					<span class="mcolor right" onclick="commentRelate('<?=$value->id?>','<?=$value2->id?>','<?=$value2->user_name?>')" >&nbsp;&nbsp;回复</span>
+					<?php endif?>
+				</p>
+				<?php endforeach?>
+	    	</div>
+	    	<form class="commentBox">
+	    		<span class="hidden" style="padding: 5px;margin: 0px 5px 5px 0;font-size: 12px;background:#ececec;" id="replayBox" onclick="commentCancle('<?=$value->id?>')">回复<span id="commentUserName"></span>&nbsp;&nbsp;X</span>
+				<input type="text" name="content" class="left" id="commentContent">
+				<input type="submit" value="ok" class="left" id="commentSubmit" onclick="return comment('<?=$value->id?>')">
+			</form>
 	    </div>
 		<?php endforeach?>
 		<?php endif?>		
 	</div>
 </section>
 <?php include("../resources/views/front/footer.php");?>
+<script type="text/javascript">
+	function commentDelete(object_id){
+		toast('提交...');
+		$.ajax({	
+			url:'/news/'+object_id,
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				toast(data.message);
+				window.location.reload();
+			},
+			error:function(data){
+				toast(data.message);
+			}
+		})
+	}
+</script>

@@ -53,10 +53,10 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 
 	// 分享
 	$app->post('news',                 					         		'App\Http\Controllers\Front\NewsController@store');
+	$app->post('news/{id}',                 					        'App\Http\Controllers\Front\NewsController@remove');
 	$app->get('news',                						         	'App\Http\Controllers\Front\NewsController@index');
-	$app->delete('news/{id}',                						    'App\Http\Controllers\Front\NewsController@delete');
-	$app->post('news/{id}/comments',                 					'App\Http\Controllers\Front\NewsController@store');
-	$app->get('news/{id}//comments',                					'App\Http\Controllers\Front\NewsController@index');
+	$app->post('comment',                 								'App\Http\Controllers\Front\NewsController@comment');
+	$app->post('star',                 									'App\Http\Controllers\Front\NewsController@star');
 	
 
 	// 个人

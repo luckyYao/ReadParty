@@ -25,6 +25,9 @@
     body{
         min-height: 100%;
     }
+    input{
+        -webkit-appearance: none;
+    }
     </style>
 </head>
 <body class="agent-<?=getUserAgent()?>">

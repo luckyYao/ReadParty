@@ -11,6 +11,7 @@
 			body{
 				padding-bottom: 0;
 		    	box-shadow: none;
+		    	background: #fff;
 			}
 		</style>
 		<img style="width:100px;margin:80px auto 20px;display:block;" src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/200">

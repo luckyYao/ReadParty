@@ -36,12 +36,12 @@
 		<div>
 			<h1>请输入书籍的&nbsp;isbn&nbsp;号</h1>
 			<input type="text" name="isbn" oninput="getBookInfo()">
-			<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
+			<p class="tip">Tips：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
 			<?php 
 				$agent = getUserAgent();
-				if ($agent=='other'):
+				if ($agent!='other'):
 			?>
-			<p class="tip mcolor" onclick="codeScan">你也可以：扫描书籍条形码获取isbn号</p>
+			<p id="scan" class="tip mcolor" onclick="codeScan()">你也可以：扫描书籍条形码获取isbn号</p>
 			<?php endif?>
 		</div>
 		<div class="bookInfo">
@@ -56,7 +56,6 @@
 	<div class="step" id="stepWords" >
 		<h1>说点什么给看到这本书的人吧</h1>
 		<textarea  name="words" rows="4" placeholder="你好，陌生人，我最喜欢的书分享给你，请认真阅读哦"></textarea>
-		<p class="tip">TIps：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
 		<div class="step-button" onclick="showDialogue()">
 			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/60">
 			<span>好了</span>
@@ -110,7 +109,7 @@
 	            			kset('book_name',data.result.title);
 	            			var tpl = '<h3>是这本书吗？</h3>\
 										<img class="left" src="'+data.result.image+'">\
-										<p class="right">作者: '+data.result.author+'</br>\
+										<p class="right" style="max-width:170px;">作者: '+data.result.author+'</br>\
 										译者：'+data.result.translator+'</br>\
 										出版社: '+data.result.publisher+'</br>\
 										出版年: '+data.result.pubdate+'</br>\
@@ -208,13 +207,15 @@
 			content: {
 			}
 		};
+
 		window.webkit.messageHandlers.webViewApp.postMessage(payload); //ios
 	}
 
 	// 一维码/二维码扫描结果
 	function codeScanResult (result) {
-		console.log(result);
 		$("input[name='isbn']").val(result);
 		getBookInfo();
+		$("#scan").hide();
 	}
+
 </script>

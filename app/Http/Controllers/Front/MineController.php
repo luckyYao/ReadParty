@@ -87,21 +87,6 @@ class MineController extends BaseController
         }
         return view("front/my/index",['result'=>$result]);
     }
-    public function myNews()
-    {
-        $result['user'] = $this->getUser();
-        if (!empty($result['user'])) {
-            $result['news_mine'] = DB::table('news')
-                ->join('user', 'news.user_id', '=', 'user.id')
-                ->where('news.user_id',$result['user']['user_id'])
-                ->where('news.is_delete',0)
-                ->where('news.is_show',1)
-                ->select('news.*','user.name as user_name','user.icon as user_pic')
-                ->orderBy('news.create_at','DESC')
-                ->get();
-        }
-        return view("front/my/news",['result'=>$result]);
-    }
     public function updateState()
     {
         $param = Request::all();
@@ -171,5 +156,29 @@ class MineController extends BaseController
                 return $this->jsonResponse(true,[],"漂流失败");
             }
         }
+    }
+    // 个人消息
+    public function myNews()
+    {
+        $result['user'] = $this->getUser();
+        if (!empty($result['user'])) {
+            $result['news_mine'] = DB::table('news')
+                ->join('user', 'news.user_id', '=', 'user.id')
+                ->where('news.user_id',$result['user']['user_id'])
+                ->where('news.is_delete',0)
+                ->where('news.is_show',1)
+                ->select('news.*','user.name as user_name','user.icon as user_pic')
+                ->orderBy('news.create_at','DESC')
+                ->get();
+            foreach ($result['news_mine'] as $key => $value1) {
+                $comments = json_decode($this->httpRequest('http://dev.timepicker.cn/api/comment?object=readparty&object_id='.$value1->id.'&app_id=25&page=1','5a350362534f8a12d148743d26faa21d'))->result;
+                foreach ($comments as $key => $value2) {
+                    $value2->commentsRelate = json_decode($this->httpRequest('http://dev.timepicker.cn/api/comment/'.$value2->id.'/relate?page=1','5a350362534f8a12d148743d26faa21d'))->result;
+                }
+                $value1->comments = $comments;
+                $value1->commentsCount = json_decode($this->httpRequest('http://dev.timepicker.cn/api/comment/count?object=readparty&object_ids='.$value1->id.'&app_id=25','5a350362534f8a12d148743d26faa21d'))->result[0];
+            }
+        }
+        return view("front/my/news",['result'=>$result]);
     }
 }
