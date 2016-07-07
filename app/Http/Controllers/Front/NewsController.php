@@ -112,10 +112,9 @@ class NewsController extends BaseController
         $data['user_id'] = $userInfo->id;
         $result = json_decode($this->httpRequest('http://dev.timepicker.cn/api/star','5a350362534f8a12d148743d26faa21d',$data));
         if ($result->message=='star exist') {
-            return $this->jsonResponse(true,[],'不可以重复点赞');
+            return $this->jsonResponse(false,[],'不可以重复点赞');
         }else{
             return $this->jsonResponse(false,[],'点赞成功');
-        }
-        
+        }    
     }
 }

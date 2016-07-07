@@ -34,6 +34,7 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 
 	// 读书
 	$app->get('/',                						    	    	'App\Http\Controllers\Front\PartyController@index');
+	$app->post('/search',                						    	'App\Http\Controllers\Front\PartyController@search');
 	$app->get('/help',                						    	    'App\Http\Controllers\Front\PartyController@indexHelp');
 	$app->get('/book/add',                 					    		'App\Http\Controllers\Front\PartyController@addBook');
 	$app->get('/{type}/{id}',                   						'App\Http\Controllers\Front\PartyController@show');
@@ -61,6 +62,7 @@ $app->group(array('prefix'=>'/'),function() use ($app){
 
 	// 个人
 	$app->get('/myBook',                 					    		'App\Http\Controllers\Front\MineController@myBook');
+	$app->post('/recallBook/{id}',                 					    'App\Http\Controllers\Front\MineController@recallBook');
 	$app->get('/myNews',                 					    		'App\Http\Controllers\Front\MineController@myNews');
 	$app->post('/state',                 					    		'App\Http\Controllers\Front\MineController@updateState');
 });

@@ -21,6 +21,31 @@ class PartyController extends BaseController
         return view("front/book/index",['result'=>$result]);
     }
 
+    public function search()
+    {
+        $param = Request::all();
+        $result['input'] = $param['input'];
+        $result['borrow'] = DB::table('borrow')
+                    ->join('user', 'borrow.user_id', '=', 'user.id')
+                    ->where('borrow.is_delete',0)
+                    ->where('borrow.is_show',1)
+                    ->where('book_name','LIKE','%'.$result['input'].'%')
+                    ->select('borrow.*', 'user.name as user_name')
+                    ->orderBy('borrow.times','DESC')
+                    ->get();
+        foreach ($result['borrow'] as $key => $value) {
+            $value->tags = DB::table('tag')
+                        ->select('*')
+                        ->where('tag.isbn',$value->isbn)
+                        ->where('tag.is_delete',0)
+                        ->where('tag.is_show',1)
+                        ->distinct()
+                        ->get();
+        }
+        $result['type'] = 'borrow';
+        return view('front/book/index',['result'=>$result]);            
+    }
+
     public function indexHelp()
     {   
         $result['help'] = $this->getBooks('help');
@@ -127,6 +152,15 @@ class PartyController extends BaseController
             return $this->jsonResponse(false,[],"书籍不存在");
         }
 
+        // 判断当前用户是不是本书主人
+        $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
+        if (!empty($token)) {
+            $userInfo = $this->tokenUserInfo($token);
+            $user_exits =  DB::table('user')->where('school_id',$userInfo->school_id)->select('*')->first();
+            $result->is_owner = $user_exits->id == $result->user_id?true:false;
+        }else{
+            $result->is_owner = false; 
+        }
         // 获取当前用户姓名
         $token = !empty($_SESSION['token'])?$_SESSION['token']:'';
         $userInfo = $this->tokenUserInfo($token);
@@ -139,7 +173,7 @@ class PartyController extends BaseController
                 ->where($table.'.'.$type.'_id',$id)
                 ->join('user', $table.'.user_id', '=', 'user.id')
                 ->where($table.'.is_delete',0)
-                ->select($table.'.*','user.name as user_name')
+                ->select($table.'.*','user.name as user_name','user.phone as user_phone')
                 ->orderBy($table.'.create_at','DESC')
                 ->get();
             $result->timeline = $timeline;
@@ -164,11 +198,10 @@ class PartyController extends BaseController
                     ->wherein('state',[1,2,3])
                     ->select('state')
                     ->get();
-            if (in_array('1', $states) || in_array('3', $states)) {
-                $state = 0;
-            }else{
-                $state = 3;
-            };
+            foreach ($states as $key => $value) {
+                if ($value=='1'||$value='3') $state = 0;
+                else $state = 3;
+            }
             $id = DB::table('timeline_borrow')->insertGetId([
                 'borrow_id' => $book_id,
                 'user_id'   => $user['user_id'],

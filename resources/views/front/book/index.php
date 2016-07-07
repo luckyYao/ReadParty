@@ -10,21 +10,11 @@
 	  <span class="label middle">or</span>
 	  <a class="<?=$result['type']=='help'?'label big mcolor-help-bg':'label big'?>" href="/help">帮帮忙</a>
 	</div>
-<!-- 	<div>
-		<span class="<?=$result['tags_current']=='all'?'label current':'label '?>">全部</span>
-		<?php foreach ($result['tags'] as $key => $value) :?>
-		<form action="/book-tag" style="display:inline-block" method="post">
-	  		<input name='tag' type="text" class="hidden" value="<?=$value->name?>">
-	  		<input name='type' type="text" class="hidden" value="<?=$result['type']?>">
-			<input class="<?=$result['tags_current']==$value->name?'label current':'label '?>" type="submit" value="<?=$value->name?>">
-	  	</form>
-		<?php endforeach?>
-	</div> -->
 	<?php if(!empty($result['borrow'])):?>
-    <div class="searchBox">
-        <input type="text" class="search">
-        <div class="searchNotic ion-ios-search"><?=count($result['borrow'])?>&nbsp;books</div>
-    </div>
+    <form class="searchBox" action="/search" method="post">
+        <input type="text" name="input" id="searchContent" class="search" value="<?=!empty($result['input'])?$result['input']:''?>" placeholder="search&nbsp;<?=count($result['borrow'])?>&nbsp;books" onkeypress="if(event.keyCode==13) {btn.click();return false;}">
+    	<input type="submit" name="btn" id="btn" value="提交" style="display:none"/>
+    </form>
 	<?php endif?>
 </section>
 <section>

@@ -62,7 +62,7 @@
                 <div class="leftLine right">
                     <div class="<?=in_array($value->state,[1,2,3])?'userState mcolor':'userState'?>">
                         <div class="userInfo"><span class="userName">[<?=$state?>]<?=$value->user_name?>&nbsp;</span></div>
-                        <p class="ownerWords"><?=$value->words?></p>
+                        <p class="ownerWords"><?=$value->words?><?=$result->is_owner?'tel:'.$value->user_phone:''?> </br></p>
                     </div>
                 </div>
     		</div>

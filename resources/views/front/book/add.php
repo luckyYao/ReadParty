@@ -186,14 +186,13 @@
 		if (kget('option')=='borrow') {
 			var state = '您即将分享书籍《'+kget('book_name')+'》，请认真阅读以下内容:';
 			var attention = '1.您的书籍在阅读派对上至少要漂流3个月哦，3个月后您可以随时收回您的书。</br>\
-							 2.点击确定后派对将会帮你创建一个“readParty·'+kget('book_name')+'”的拾光团队，以后借在这本书的用户会自动加入到这个团队，方便你们联系。</br>';
+							 2.图书漂流期间您会收到图书动态消息，最终安全由您自己负责哦';
 			
 			$("#state").append(state);
 			$("#attention").append(attention);
 		}else{
 			var state = '您即将申请借阅书籍《'+kget('book_name')+'》，请认真阅读以下内容:';
-			var attention = '1.您的<span class="mcolor">帮忙借书</span>的人越多，借到的可能越大哦~</br>\
-							 2.申请成功后可以分享给好友让他们<span class="mcolor">帮忙借书</span>，超过30人帮忙还没有人借给你书的话，阅读派对会买一本《'+kget('book_name')+'》借给你哦';
+			var attention = '1.您的<span class="mcolor">帮忙借书</span>的人越多，借到的可能越大哦~</br>';
 			$("#state").append(state);
 			$("#attention").append(attention);
 		};

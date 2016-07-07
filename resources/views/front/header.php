@@ -25,8 +25,9 @@
     body{
         min-height: 100%;
     }
-    input{
+    input,textarea{
         -webkit-appearance: none;
+        border-radius: 0;
     }
     </style>
 </head>

@@ -51,53 +51,54 @@ nav ul li a.current {
   height: auto;
   white-space: inherit;
   line-height: 20px;
+  font-size: 14px;
 }
 
-/* line 50, ../sass/screen.scss */
+/* line 51, ../sass/screen.scss */
 input.label {
   border: none;
 }
 
-/* line 53, ../sass/screen.scss */
+/* line 54, ../sass/screen.scss */
 a {
   color: #76862e;
 }
 
-/* line 56, ../sass/screen.scss */
+/* line 57, ../sass/screen.scss */
 .left {
   float: left;
   margin-right: 0;
 }
 
-/* line 62, ../sass/screen.scss */
+/* line 63, ../sass/screen.scss */
 .mcolor {
   color: #76862e !important;
 }
 
-/* line 65, ../sass/screen.scss */
+/* line 66, ../sass/screen.scss */
 .pointer {
   cursor: pointer;
 }
 
-/* line 68, ../sass/screen.scss */
+/* line 69, ../sass/screen.scss */
 body {
   background: #F7F6F6;
   font-size: 14px;
   font-family: "微软雅黑";
 }
 
-/* line 73, ../sass/screen.scss */
+/* line 74, ../sass/screen.scss */
 .clear {
   clear: both;
 }
 
-/* line 76, ../sass/screen.scss */
+/* line 77, ../sass/screen.scss */
 .ownerWords, .ownerName {
   margin: 5px 0;
   line-height: 18px;
 }
 
-/* line 80, ../sass/screen.scss */
+/* line 81, ../sass/screen.scss */
 .bookCover {
   width: 100px !important;
   margin: 20px auto !important;
@@ -106,7 +107,7 @@ body {
   height: auto !important;
 }
 
-/* line 87, ../sass/screen.scss */
+/* line 88, ../sass/screen.scss */
 .bookAction {
   font-size: 14px;
   color: #76862e;
@@ -114,7 +115,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* line 93, ../sass/screen.scss */
+/* line 94, ../sass/screen.scss */
 .bookValue {
   background: #76862e;
   color: #fff;
@@ -123,11 +124,11 @@ body {
   line-height: 35px;
 }
 
-/* line 100, ../sass/screen.scss */
+/* line 101, ../sass/screen.scss */
 .searchBox {
   position: relative;
 }
-/* line 102, ../sass/screen.scss */
+/* line 103, ../sass/screen.scss */
 .searchBox .search {
   display: block;
   width: 100%;
@@ -141,7 +142,7 @@ body {
   border-radius: 5px;
   border: 1px solid #ececec;
 }
-/* line 115, ../sass/screen.scss */
+/* line 116, ../sass/screen.scss */
 .searchBox .searchNotic {
   position: absolute;
   left: 0;
@@ -152,12 +153,12 @@ body {
   color: #999;
 }
 
-/* line 125, ../sass/screen.scss */
+/* line 126, ../sass/screen.scss */
 .tabs .label.current {
   background: #76862e;
 }
 
-/* line 128, ../sass/screen.scss */
+/* line 129, ../sass/screen.scss */
 .userIcon {
   width: 30px !important;
   height: 30px !important;
@@ -170,7 +171,7 @@ body {
 }
 
 /*添加活动*/
-/* line 139, ../sass/screen.scss */
+/* line 140, ../sass/screen.scss */
 #editButton {
   width: 40px;
   height: 40px;
@@ -180,7 +181,6 @@ body {
   position: fixed;
   right: 15px;
   bottom: 55px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 }
 
 /* line 153, ../sass/screen.scss */
@@ -271,7 +271,7 @@ body {
 /* line 220, ../sass/screen.scss */
 .timeLine .timeLineItem .leftLine {
   border-left: 1px solid #76862e;
-  padding-left: 18px;
+  padding-left: 23px;
   position: absolute;
   right: 0px;
   top: 0px;
@@ -295,7 +295,7 @@ body {
 }
 /* line 243, ../sass/screen.scss */
 .timeLine .timeLineItem .userState .userInfo .userClass {
-  font-size: 12px;
+  font-size: 14px;
 }
 /* line 248, ../sass/screen.scss */
 .timeLine .timeLineItem .userIcon {
@@ -335,16 +335,19 @@ body {
 .commentBox {
   overflow: hidden;
   margin: 10px auto;
+  position: relative;
 }
-/* line 277, ../sass/screen.scss */
+/* line 278, ../sass/screen.scss */
 .commentBox input[type='text'] {
   border: 1px solid #ececec;
-  width: 85%;
-  height: 32px;
+  width: 100%;
+  height: 30px;
   padding: 2px 5px;
   box-sizing: border-box;
+  float: left;
+  padding-right: 50px;
 }
-/* line 284, ../sass/screen.scss */
+/* line 287, ../sass/screen.scss */
 .commentBox textarea {
   width: 100%;
   margin-bottom: 10px;
@@ -352,19 +355,24 @@ body {
   border: 1px solid #76862e;
   padding: 10px;
   resize: none;
+  font-size: 14px;
 }
-/* line 292, ../sass/screen.scss */
+/* line 296, ../sass/screen.scss */
 .commentBox input[type="submit"] {
   background: #76862e;
   border: none;
-  font-size: 20px;
-  line-height: 30px;
+  font-size: 14px;
+  line-height: 34px;
   color: #fff;
-  width: 15%;
-  box-sizing: border-box;
+  float: left;
+  font-family: "微软雅黑", Raleway, sans-serif;
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 50px;
 }
 
-/* line 302, ../sass/screen.scss */
+/* line 310, ../sass/screen.scss */
 .shadow {
   display: none;
   position: fixed;
@@ -375,7 +383,7 @@ body {
   background: rgba(0, 0, 0, 0.5);
   z-index: 9;
 }
-/* line 311, ../sass/screen.scss */
+/* line 319, ../sass/screen.scss */
 .shadow .shadowContent {
   width: 280px;
   position: absolute;
@@ -386,45 +394,45 @@ body {
   padding: 20px;
   box-sizing: border-box;
 }
-/* line 320, ../sass/screen.scss */
+/* line 328, ../sass/screen.scss */
 .shadow .shadowContent h4 {
   padding: 0;
   margin: 5px 0;
 }
-/* line 324, ../sass/screen.scss */
+/* line 332, ../sass/screen.scss */
 .shadow .shadowContent p {
   margin: 0;
   line-height: 24px;
 }
-/* line 328, ../sass/screen.scss */
+/* line 336, ../sass/screen.scss */
 .shadow .shadowContent .mcolor {
   font-weight: 700;
 }
-/* line 331, ../sass/screen.scss */
+/* line 339, ../sass/screen.scss */
 .shadow .shadowContent h4.btn {
   text-align: right;
 }
-/* line 333, ../sass/screen.scss */
+/* line 341, ../sass/screen.scss */
 .shadow .shadowContent h4.btn .mcolor {
   margin-left: 15px;
 }
 
-/* line 340, ../sass/screen.scss */
+/* line 348, ../sass/screen.scss */
 .emptyPage img {
   margin: 50px auto 20px;
   display: block;
 }
-/* line 344, ../sass/screen.scss */
+/* line 352, ../sass/screen.scss */
 .emptyPage h3 {
   text-align: center;
 }
 
-/* line 349, ../sass/screen.scss */
+/* line 357, ../sass/screen.scss */
 .step {
   padding: 20px 0;
   position: relative;
 }
-/* line 352, ../sass/screen.scss */
+/* line 360, ../sass/screen.scss */
 .step h1 {
   text-align: center;
   color: #c2ce8c;
@@ -432,25 +440,25 @@ body {
   font-weight: 700;
   font-size: 18px;
 }
-/* line 359, ../sass/screen.scss */
+/* line 367, ../sass/screen.scss */
 .step h2 {
   margin: 20px auto;
   font-size: 18px;
   color: #999;
   cursor: pointer;
 }
-/* line 365, ../sass/screen.scss */
+/* line 373, ../sass/screen.scss */
 .step p {
   margin: 20px auto 40px;
   font-size: 14px;
   color: #999;
   cursor: pointer;
 }
-/* line 372, ../sass/screen.scss */
+/* line 380, ../sass/screen.scss */
 .step .current h2, .step .current p {
   color: #76862e;
 }
-/* line 376, ../sass/screen.scss */
+/* line 384, ../sass/screen.scss */
 .step .step-button {
   cursor: pointer;
   width: 100px;
@@ -460,11 +468,11 @@ body {
   font-weight: 700;
   line-height: 30px;
 }
-/* line 384, ../sass/screen.scss */
+/* line 392, ../sass/screen.scss */
 .step .step-button img {
   width: 30px;
 }
-/* line 388, ../sass/screen.scss */
+/* line 396, ../sass/screen.scss */
 .step input[type="text"] {
   border: 1px solid #c2ce8c;
   background: none;
@@ -478,7 +486,7 @@ body {
   margin: 20px auto;
   font-family: "微软雅黑", Raleway, sans-serif;
 }
-/* line 401, ../sass/screen.scss */
+/* line 409, ../sass/screen.scss */
 .step textarea {
   resize: none;
   width: 300px;
@@ -491,26 +499,26 @@ body {
   font-family: "微软雅黑", Raleway, sans-serif;
   box-sizing: border-box;
 }
-/* line 413, ../sass/screen.scss */
+/* line 421, ../sass/screen.scss */
 .step .tip {
   width: 300px;
   font-size: 14px;
   color: #999;
   margin: 10px auto;
 }
-/* line 419, ../sass/screen.scss */
+/* line 427, ../sass/screen.scss */
 .step .tip.error {
   color: #d9534f;
   background: none;
 }
-/* line 423, ../sass/screen.scss */
+/* line 431, ../sass/screen.scss */
 .step .bookInfo {
   display: none;
   background: #c2ce8c;
   padding: 10px 35px 20px;
   overflow: hidden;
 }
-/* line 428, ../sass/screen.scss */
+/* line 436, ../sass/screen.scss */
 .step .bookInfo h3 {
   text-align: center;
   margin: 10px 0;
@@ -518,12 +526,12 @@ body {
   font-size: 14px;
   font-weight: 500;
 }
-/* line 435, ../sass/screen.scss */
+/* line 443, ../sass/screen.scss */
 .step .bookInfo img {
   width: 100px;
   margin-right: 15px;
 }
-/* line 439, ../sass/screen.scss */
+/* line 447, ../sass/screen.scss */
 .step .bookInfo p {
   max-width: 180px;
   margin: 0;
@@ -531,12 +539,12 @@ body {
   font-size: 14px;
 }
 @media only screen and (max-width: 350px) {
-  /* line 423, ../sass/screen.scss */
+  /* line 431, ../sass/screen.scss */
   .step .bookInfo {
     padding: 10px 15px 20px;
   }
 }
-/* line 449, ../sass/screen.scss */
+/* line 457, ../sass/screen.scss */
 .step .reback {
   cursor: pointer;
   background: #c2ce8c;
@@ -547,23 +555,44 @@ body {
   bottom: 0;
 }
 
-/* line 459, ../sass/screen.scss */
+/* line 467, ../sass/screen.scss */
 #stepChoose {
   padding: 20px 40px;
 }
 
-/* line 462, ../sass/screen.scss */
+/* line 470, ../sass/screen.scss */
 #stepIsbn, #stepWords {
   display: none;
 }
 
-/* line 467, ../sass/screen.scss */
+/* line 475, ../sass/screen.scss */
 .mcolor-help {
   color: #be607b;
 }
 
-/* line 470, ../sass/screen.scss */
+/* line 478, ../sass/screen.scss */
 .mcolor-help-bg {
   background: #be607b;
   color: #fff;
+}
+
+/* line 484, ../sass/screen.scss */
+.like {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAAaCAYAAAD43n+tAAAB8UlEQVRYR+2VS04CQRCGqzpxXDpHgJ2Jj+AN5ATADWDDpFe6UKOycaMYMcFdBzbICfQG6g2Mj8SdeAPWQ6w2PQ7hkWmmG3FizLCCTnX99VUVfyP8sw/+Mx5Igf76RNMJpRNKuAOxK9fpdFzf93cAoEdED5zznqpRCJFBxAIiukTUHZ7PW//uSc51lmkHJPQY+g/nR2+BzmF9NfNJTgEZuAz87vBcpzMTSAhRZow1AcAdJiCiivrOGOuMJ1XnnPPreYD2TzfKANhEHOlIKQMdRJzQUeeN2rNWRwsUTuZ9HCam2L7jONlKpdK3gVKTWVqi93GYWfelhP5gwLJXJ4+ROlogIcQ2Y+zOpjgiynPO723u7NXXt5m01EHKXx69ROosFAgRt6rV6uNvA0n5udWovUbqzPwPtVotNdYVwwI/PM/LGMZOhB2cbRrrSAkfjdqTVicOqAgAN4ZFljzPuzWMnQLaKAKgoY4sXRw/a3VibTt0ugmnmS76Jw43zKWcbtrRpnXiHC5wRZOOzoJaBIwJlAmMMVD4kKo3aWFvj66RUZMyhbECCqGUlQf7S0RFW4s22QYVE1r5tw5SUWfRUfmMVm78YrvdzqnftvZsCjNav7VAR2fPunzWQLaFJR2fAiXdcVu9dEK2HUs6Pp1Q0h231fsC2/bOGwHZApQAAAAASUVORK5CYII=);
+  background-repeat: no-repeat;
+  display: block;
+}
+
+/* line 490, ../sass/screen.scss */
+.like-normal {
+  width: 10px;
+  height: 16px;
+  background-position: -5px -3px;
+}
+
+/* line 496, ../sass/screen.scss */
+.like-active {
+  width: 16px;
+  height: 16px;
+  background-position: -31px -5px;
 }

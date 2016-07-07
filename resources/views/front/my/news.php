@@ -61,8 +61,8 @@
 				<?php endforeach?>
 	    	</div>
 	    	<form class="commentBox">
-	    		<span class="hidden" style="padding: 5px;margin: 0px 5px 5px 0;font-size: 12px;background:#ececec;" id="replayBox" onclick="commentCancle('<?=$value->id?>')">回复<span id="commentUserName"></span>&nbsp;&nbsp;X</span>
-				<input type="text" name="content" class="left" id="commentContent">
+	    		<span class="hidden" style="padding: 5px;margin: 0px 5px 5px 0;font-size: 12px;background:#ececec;" id="replayBox_<?=$value->id?>" onclick="commentCancle('<?=$value->id?>')">回复<span id="commentUserName_<?=$value->id?>"></span>&nbsp;&nbsp;X</span>
+				<input type="text" name="content" class="left" id="commentContent_<?=$value->id?>">
 				<input type="submit" value="ok" class="left" id="commentSubmit" onclick="return comment('<?=$value->id?>')">
 			</form>
 	    </div>

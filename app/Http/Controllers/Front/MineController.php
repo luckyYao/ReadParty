@@ -60,7 +60,7 @@ class MineController extends BaseController
                     ->join('user', 'timeline_borrow.user_id', '=', 'user.id')
                     ->wherein('timeline_borrow.state',[1,2,3])
                     ->where('timeline_borrow.is_delete',0)
-                    ->select('timeline_borrow.state','user.id as user_id','user.name as user_name','user.phone as user_phone')
+                    ->select('timeline_borrow.state','user.user_id as user_id','user.name as user_name','user.phone as user_phone')
                     ->orderBy('timeline_borrow.create_at','ASC')
                     ->get();
                 $reader_next = DB::table('timeline_borrow')
@@ -68,7 +68,7 @@ class MineController extends BaseController
                     ->join('user', 'timeline_borrow.user_id', '=', 'user.id')
                     ->where('timeline_borrow.state',0)
                     ->where('timeline_borrow.is_delete',0)
-                    ->select('timeline_borrow.state','user.id as user_id','user.name as user_name','user.phone as user_phone')
+                    ->select('timeline_borrow.state','user.user_id as user_id','user.name as user_name','user.phone as user_phone')
                     ->orderBy('timeline_borrow.create_at','ASC')
                     ->get(); 
                 $value1->reader_current = $reader_current;
@@ -91,22 +91,38 @@ class MineController extends BaseController
     {
         $param = Request::all();
         $user = $this->getUser();
-
         // 开始漂流
         if ($param['type']==1) {
-            // 当前用户状态换成“漂流（起）”
+            // 当前用户状态换成“漂流（from）”
             $result['current'] = DB::table('timeline_borrow')
                     ->where('timeline_borrow.user_id', $user['user_id'])
                     ->where('timeline_borrow.borrow_id', $param['borrow_id'])
                     ->where('timeline_borrow.state', '1')
                     ->update(['state'=>2]);
             if ($result['current']) {
-                // 寻找下一个漂流对象状态换成“漂流（终）”
+                // 寻找下一个漂流对象状态换成“漂流（to）”
                 $result['next'] = DB::table('timeline_borrow')
                     ->where('timeline_borrow.user_id', $param['next_id'])
                     ->where('timeline_borrow.borrow_id', $param['borrow_id'])
                     ->update(['state'=>3]);
-                if ($result['next']) return $this->jsonResponse(false,[],"漂流成功");
+                if ($result['next']) {
+                    $informData = [
+                        "title"         => '阅读派对图书“'.$param['book_name'].'”漂流到你这里了,登陆阅读派对去看看？',
+                        "app_id"        => 25,
+                        "set_id"        => 88,
+                        "sender_id"     => 1,
+                        "users"         => [$param['next_id']],
+                        "reply_opts"    => [
+                            ["content"=>"去看看","is_expected"=>true,"url_page"=>"http://192.168.2.83:85/myBook"],
+                            ["content"=>"稍后再说"]
+                        ],
+                    ];
+                    $informResult = $this->sendInform($informData,$_ENV["PTIME_TOKEN"]);
+                    if($informResult["error"]){
+                        return $informResult;
+                    }
+                    return $this->jsonResponse(false,[],"漂流成功");
+                }
                 else return $this->jsonResponse(false,[],"漂流中");   
             }else{
                 return $this->jsonResponse(true,[],"漂流失败");
@@ -119,17 +135,35 @@ class MineController extends BaseController
                     ->where('timeline_borrow.borrow_id', $param['borrow_id'])
                     ->update(['state'=>0,'create_at'=>date("Y-m-d H:i:s")]);
             if ($result['current']) {
-                // 寻找下一个漂流对象状态换成“漂流（终）”
+                // 寻找下一个漂流对象状态换成“漂流（to）”
                 $result_next = DB::table('timeline_borrow')
+                        ->join('user','user.id','=','timeline_borrow.user_id')
                         ->where('timeline_borrow.borrow_id', $param['borrow_id'])
+                        ->where('timeline_borrow.user_id','!=',$user['user_id'])
                         ->where('timeline_borrow.state', '0')
                         ->orderBy('timeline_borrow.create_at','DESC')
+                        ->select('timeline_borrow.*','user.user_id')
                         ->first();
                 if (!empty($result_next)&&$result_next->user_id != $user['user_id']) {
                     $result['next'] = DB::table('timeline_borrow')
                         ->where('timeline_borrow.user_id', $result_next->user_id)
                         ->where('timeline_borrow.borrow_id', $param['borrow_id'])
                         ->update(['state'=>3]);
+                    $informData = [
+                        "title"         => '阅读派对图书“'.$param['book_name'].'”漂流到你这里了,登陆阅读派对去看看？',
+                        "app_id"        => 25,
+                        "set_id"        => 88,
+                        "sender_id"     => 1,
+                        "users"         => [$result_next->user_id],
+                        "reply_opts"    => [
+                            ["content"=>"去看看","is_expected"=>true,"url_page"=>"http://192.168.2.83:85/myBook"],
+                            ["content"=>"稍后再说"]
+                        ],
+                    ];
+                    $informResult = $this->sendInform($informData,$_ENV["PTIME_TOKEN"]);
+                    if($informResult["error"]){
+                        return $informResult;
+                    }
                     return $this->jsonResponse(false,[],"漂流成功~");
                 }else{
                     return $this->jsonResponse(false,[],"漂流中~");
@@ -146,11 +180,58 @@ class MineController extends BaseController
                     ->update(['state'=>1]);
             if ($result['current']) {
                 // 寻找上一个漂流对象状态换成“读过”
-                $result['next'] = DB::table('timeline_borrow')
+                $user_prev= DB::table('timeline_borrow')
+                    ->where('timeline_borrow.state', 2)
+                    ->where('timeline_borrow.borrow_id', $param['borrow_id'])
+                    ->join('user', 'timeline_borrow.user_id', '=', 'user.id')
+                    ->select('user.user_id','user.name')
+                    ->get();
+                $user_id = [$user_prev[0]->user_id];
+                $user_name = $user_prev[0]->name;
+                $result['prev'] = DB::table('timeline_borrow')
                     ->where('timeline_borrow.state', 2)
                     ->where('timeline_borrow.borrow_id', $param['borrow_id'])
                     ->update(['state'=>4]);
-                if ($result['next']) return $this->jsonResponse(false,[],"漂流成功");
+                if ($result['prev']) {
+                    //给图书的主人发消息
+                    $owner_id = DB::table('borrow')
+                    ->where('borrow.id', $param['borrow_id'])
+                    ->select('borrow.user_id')
+                    ->get();
+                    $informData2 = [
+                        "title"         => '您的图书“'.$param['book_name'].'”已从'.$user_name.'漂流到'.$user['user_name'],
+                        "app_id"        => 25,
+                        "set_id"        => 88,
+                        "sender_id"     => 1,
+                        "users"         => $owner_id,
+                        "reply_opts"    => [
+                            ["content"=>"去看看","is_expected"=>true,"url_page"=>"http://192.168.2.83:85/myBook"],
+                            ["content"=>"稍后再说"]
+                        ],    
+                    ];
+                    $informResult2 = $this->sendInform($informData2,$_ENV["PTIME_TOKEN"]);
+                    if($informResult2["error"]){
+                        return $informResult2;
+                    }
+                    //给漂流（from）的用户发消息 
+                    $informData1 = [
+                        "title"         => '阅读派对图书“'.$param['book_name'].'”已从您这里成功漂出',
+                        "app_id"        => 25,
+                        "set_id"        => 88,
+                        "sender_id"     => 1,
+                        "users"         => $user_id,
+                        "reply_opts"    => [
+                            ["content"=>"去看看","is_expected"=>true,"url_page"=>"http://192.168.2.83:85/myBook"],
+                            ["content"=>"稍后再说"]
+                        ],    
+                    ];
+                    $informResult1 = $this->sendInform($informData1,$_ENV["PTIME_TOKEN"]);
+                    if($informResult1["error"]){
+                        return $informResult1;
+                    }
+                    
+                    return $this->jsonResponse(false,[],"漂流成功");
+                }
                 else return $this->jsonResponse(false,[],"漂流中"); 
             }else{
                 return $this->jsonResponse(true,[],"漂流失败");
@@ -180,5 +261,26 @@ class MineController extends BaseController
             }
         }
         return view("front/my/news",['result'=>$result]);
+    }
+
+    // 撤回书籍
+    public function recallBook($id)
+    {
+        $time_now = time();
+        $book_info = DB::table('borrow')
+            ->where('borrow.id', $id)
+            ->select('create_at')
+            ->get();
+        $deadline = strtotime($book_info[0]->create_at)+2629743*3;
+        if ($time_now>$deadline) {
+            $result = DB::table('borrow')
+                ->where('borrow.id', $id)
+                ->update(['is_delete'=>1]);
+            return $this->jsonResponse(false,[],"撤回成功");
+        }else{
+            return $this->jsonResponse(true,[],"发布书三个月后才可撤回哦");
+        }
+        
+        
     }
 }

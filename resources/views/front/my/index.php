@@ -64,6 +64,7 @@
 		  	<hr>
 		  	<span class="label bg-mcolor">借出</span>
 		  	<span class="label">等待<?=count($value->reader_next)?>人</span>
+		  	<span class="right button mcolor mid" onclick="recallBook('<?=$value->id?>')">撤回</span>
 		</div>
 		<?php endforeach?>
 		<?php endif?>		
@@ -110,10 +111,10 @@
 	        ?>
 		  	<span class="label bg-mcolor"><?=$state?></span>
 			<?php if($value->state=='1'):?>
-			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->id?>','<?=!empty($value->reader_next)?$value->reader_next[0]->user_id:"0"?>',1)">开始漂流</span>
+			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->book_name?>','<?=$value->id?>','<?=!empty($value->reader_next)?$value->reader_next[0]->user_id:"0"?>',1)">开始漂流</span>
 			<?php elseif($value->state=='3'):?>
-			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->id?>','0',3)">接收</span>
-			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->id?>','0',2)">过了</span>
+			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->book_name?>','<?=$value->id?>','0',3)">接收</span>
+			<span class="button mcolor mid  right" onclick="showDialogue('<?=$value->book_name?>','<?=$value->id?>','0',2)">过了</span>
 			<?php endif?>
 		</div>
 		<?php endforeach?>
@@ -162,14 +163,14 @@
 			$("#"+$(this).attr('name')).show();
 		};
 	})
-	function showDialogue(borrow_id,next_id,type){
+	function showDialogue(book_name,borrow_id,next_id,type){
 		if (type==1) {
 			var sql_state = '您即将开始图书漂流，请认真阅读以下内容：';
 			var sql_attention = '1.请确认您的书籍已经读完。</br>\
 						        2.图书漂流期间您依然要对图书的安全负责哦。</br>\
 						        3.图书漂流到下一为读者手中的时候，请您尽快联系下一位读者转交图书</br>\
 						        4.图书成功漂流后，请嘱托对方将阅读状态改为“在读”，图书安全就交给对方负责喽';
-			var sql = '<span id="go" class="mcolor" onclick="changeSatate('+borrow_id+','+next_id+','+type+')">好的，了解</span>';
+			var sql = '<span id="go" class="mcolor" onclick="changeSatate(\''+book_name+'\','+borrow_id+','+next_id+','+type+')">好的，了解</span>';
 			$("#state").html(sql_state);
 			$("#attention").html(sql_attention);
 			$("#dialogue .btn").append(sql);
@@ -177,7 +178,7 @@
 		}else if(type==2){
 			var sql_state = '您即将错过阅读这本书哦：';
 			var sql_attention = '1.确认后您将排在时间轴的最后面重新等待阅读';
-			var sql = '<span id="go" class="mcolor" onclick="changeSatate('+borrow_id+','+next_id+','+type+')">好的，了解</span>';
+			var sql = '<span id="go" class="mcolor" onclick="changeSatate(\''+book_name+'\','+borrow_id+','+next_id+','+type+')">好的，了解</span>';
 			$("#state").html(sql_state);
 			$("#attention").html(sql_attention);
 			$("#dialogue .btn").append(sql);
@@ -186,20 +187,34 @@
 			var sql_state = '您即将结束这本书的漂流，请认真阅读以下内容：';
 			var sql_attention = '1.确认您已经拿到这本书，如果没有请打电话联系上一本读者拿书。</br>\
 								 2.在您阅读期间请对这本书的安全负责。';
-			var sql = '<span id="go" class="mcolor" onclick="changeSatate('+borrow_id+','+next_id+','+type+')">好的，了解</span>';
+			var sql = '<span id="go" class="mcolor" onclick="changeSatate(\''+book_name+'\','+borrow_id+','+next_id+','+type+')">好的，了解</span>';
 			$("#state").html(sql_state);
 			$("#attention").html(sql_attention);
 			$("#dialogue .btn").append(sql);
 			$("#dialogue").show();
 		};
 	}
-	function changeSatate(borrow_id,next_id,type){
+	function changeSatate(book_name,borrow_id,next_id,type){
 		console.log(type);
 		hide('dialogue');
 		$.ajax({
 			url:'/state',
 			type:'post',
-			data:{'borrow_id':borrow_id,'next_id':next_id,'type':type},
+			data:{'book_name':book_name,'borrow_id':borrow_id,'next_id':next_id,'type':type},
+			dataType:'json',
+			success:function(data){
+				toast(data.message);
+				if (!data.error) window.location.reload();
+			},
+			error:function(data){
+				toast(data.message);
+			}
+		})
+	}
+	function recallBook(id){
+		$.ajax({
+			url:'/recallBook/'+id,
+			type:'post',
 			dataType:'json',
 			success:function(data){
 				toast(data.message);
