@@ -35,7 +35,7 @@
 	<div class="step" id="stepIsbn">
 		<div>
 			<h1>请输入书籍的&nbsp;isbn&nbsp;号</h1>
-			<input type="text" name="isbn" oninput="getBookInfo()">
+			<input type="text" name="isbn" onkeypress="getBookInfo()" oninput="getBookInfo()">
 			<p class="tip">Tips：书籍的&nbsp;ISBN&nbsp;号在书籍背面二维码上方</p>
 			<?php 
 				$agent = getUserAgent();
@@ -44,9 +44,7 @@
 			<p id="scan" class="tip mcolor" onclick="codeScan()">你也可以：扫描书籍条形码获取isbn号</p>
 			<?php endif?>
 		</div>
-		<div class="bookInfo">
-			
-		</div>
+		<div class="bookInfo"></div>
 		<div class="step-button" onclick="step('stepWords')">
 			<img src="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/60">
 			<span>下一步</span>
@@ -75,14 +73,15 @@
 </div>
 <?php include("../resources/views/front/footer.php");?>
 <script type="text/javascript">
+	kset('option','borrow');
     function kset(key,value){window.localStorage.setItem(key,value);}
     function kget(key){return window.localStorage.getItem(key);}
     function kremove(key){window.localStorage.removeItem(key);}
 	$("#editButton").hide();	
 	function step(id){
 		if(kget('option')!='chat'){
-			if (id=='stepWords'&& kget('isbn')==null) {
-				$(".tip").html('Tips：请输入书籍的isbn号');
+			if (id=='stepWords'&& $(".bookInfo").html().length==0) {
+				$(".tip").html('没能找到你分享的图书');
 	           	$(".tip").addClass("error");
 			}else{
 				$("#"+id).siblings().hide();
@@ -94,7 +93,8 @@
 	}
 	function getBookInfo(){
 		var isbn = $("input[name='isbn']").val();
-		if (isbn.length==13) {
+		if (isbn.length==13||event.keyCode==13) {
+			toast('找书中~');
 			$("input[name='isbn']").blur();
 			$.ajax({
 				url:"/douban",

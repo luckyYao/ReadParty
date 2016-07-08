@@ -29,6 +29,9 @@
         -webkit-appearance: none;
         border-radius: 0;
     }
+    #toast-box{
+        z-index: 10;
+    }
     </style>
 </head>
 <body class="agent-<?=getUserAgent()?>">

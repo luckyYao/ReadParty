@@ -129,33 +129,38 @@
     }
     function addTimeLine(id){
         var data = {state:0,words:$('textarea').val()};
-        $.ajax({
-            url:"/borrow/"+id+"/timeline",
-            type:"post",
-            async:false,
-            data:data,
-            dataType:'json',
-            success:function(data){
-                toast(data.message);
-                if (!data.error) {
-                    if(data.result==3){
-                        var r=confirm("恭喜你，这本书漂流到你这里喽，结束漂流，开始阅读？");
-                        if (r==true){
-                            window.location.href="/myBook";
+        if ($('textarea').val().length==0) {
+            toast("请在书籍的时间上留言！")
+        }else{
+            $.ajax({
+                url:"/borrow/"+id+"/timeline",
+                type:"post",
+                async:false,
+                data:data,
+                dataType:'json',
+                success:function(data){
+                    toast(data.message);
+                    if (!data.error) {
+                        if(data.result==3){
+                            var r=confirm("恭喜你，这本书漂流到你这里喽，结束漂流，开始阅读？");
+                            if (r==true){
+                                window.location.href="/myBook";
+                            }else{
+                               window.location.reload(); 
+                            }
                         }else{
-                           window.location.reload(); 
+                            window.location.reload();
                         }
                     }else{
-                        window.location.reload();
-                    }
-                }else{
-                    $("#dialogueForm").hide();
-                };
-            },
-            error:function(data){
-                toast(data.message);
-            }
-        })
+                        $("#dialogueForm").hide();
+                    };
+                },
+                error:function(data){
+                    toast(data.message);
+                }
+            })
+        };
+        
     }
     function help(id){
         $.ajax({

@@ -124,7 +124,10 @@
 		        <h4 class="mcolor">您好，<?=$result['user']['user_name']?></h4>
 		        <p id="state"></p>
 		        <p id="attention"></p>
-		        <h4 class="btn"><span onclick="hide('dialogue')" id="close">真麻烦，算了</span></h4>
+		        <h4 class="btn">
+		        	<span onclick="hide('dialogue')" id="close">真麻烦，算了</span>
+		        	<span id="go" class="mcolor" onclick="changeSatate()">好的，了解</span>
+		        </h4>
 		    </div>
 		</div>
 		<?php endif?>
@@ -170,27 +173,24 @@
 						        2.图书漂流期间您依然要对图书的安全负责哦。</br>\
 						        3.图书漂流到下一为读者手中的时候，请您尽快联系下一位读者转交图书</br>\
 						        4.图书成功漂流后，请嘱托对方将阅读状态改为“在读”，图书安全就交给对方负责喽';
-			var sql = '<span id="go" class="mcolor" onclick="changeSatate(\''+book_name+'\','+borrow_id+','+next_id+','+type+')">好的，了解</span>';
 			$("#state").html(sql_state);
 			$("#attention").html(sql_attention);
-			$("#dialogue .btn").append(sql);
+			$("#go").attr('onclick','changeSatate("'+book_name+'",'+borrow_id+','+next_id+','+type+')');
 			$("#dialogue").show();
 		}else if(type==2){
 			var sql_state = '您即将错过阅读这本书哦：';
 			var sql_attention = '1.确认后您将排在时间轴的最后面重新等待阅读';
-			var sql = '<span id="go" class="mcolor" onclick="changeSatate(\''+book_name+'\','+borrow_id+','+next_id+','+type+')">好的，了解</span>';
 			$("#state").html(sql_state);
 			$("#attention").html(sql_attention);
-			$("#dialogue .btn").append(sql);
+			$("#go").attr('onclick','changeSatate("'+book_name+'",'+borrow_id+','+next_id+','+type+')');
 			$("#dialogue").show();
 		}else{
 			var sql_state = '您即将结束这本书的漂流，请认真阅读以下内容：';
 			var sql_attention = '1.确认您已经拿到这本书，如果没有请打电话联系上一本读者拿书。</br>\
 								 2.在您阅读期间请对这本书的安全负责。';
-			var sql = '<span id="go" class="mcolor" onclick="changeSatate(\''+book_name+'\','+borrow_id+','+next_id+','+type+')">好的，了解</span>';
 			$("#state").html(sql_state);
 			$("#attention").html(sql_attention);
-			$("#dialogue .btn").append(sql);
+			$("#go").attr('onclick','changeSatate("'+book_name+'",'+borrow_id+','+next_id+','+type+')');
 			$("#dialogue").show();
 		};
 	}

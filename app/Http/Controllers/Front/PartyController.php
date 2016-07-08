@@ -199,7 +199,7 @@ class PartyController extends BaseController
                     ->select('state')
                     ->get();
             foreach ($states as $key => $value) {
-                if ($value=='1'||$value='3') $state = 0;
+                if ($value=='1'||$value=='3') $state = 0;
                 else $state = 3;
             }
             $id = DB::table('timeline_borrow')->insertGetId([
