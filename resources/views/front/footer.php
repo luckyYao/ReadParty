@@ -7,10 +7,11 @@
     <script type="text/javascript" src="http://source.timepicker.cn/static/js/ptime_v0.4.min.js"></script>
     <script type="text/javascript">
     	function commentRelate(object_id,comment_id,user_name){
+
 			$("#commentUserName_"+object_id).html(user_name);
 			$("#replayBox_"+object_id).css('display','inline-block');
 			$("#commentContent_"+object_id).focus();
-			$("#commentSubmit").attr('onclick',"return comment('"+object_id+"','"+comment_id+"')");
+			$("#commentSubmit_"+object_id).attr('onclick',"return comment('"+object_id+"','"+comment_id+"')");
 		}
 		function commentCancle(object_id){
 			$("#replayBox_"+object_id).css('display','none');

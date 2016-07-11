@@ -1,4 +1,5 @@
 function commentRelate(object_id,comment_id,user_name){
+	console.log(comment_id);
 	$("#commentUserName").html(user_name);
 	$("#replayBox").css('display','inline-block');
 	$("#commentContent").focus();

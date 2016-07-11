@@ -44,7 +44,7 @@
 		    	<span class="hidden" style="padding: 5px;margin: 0px 5px 5px 0;font-size: 12px;background:#ececec;" id="replayBox_<?=$value->id?>" onclick="commentCancle('<?=$value->id?>')">回复<span id="commentUserName_<?=$value->id?>"></span>&nbsp;&nbsp;X</span>
 		    	<form class="commentBox" style="margin-top:0">
 					<input type="text" name="content" class="left" id="commentContent_<?=$value->id?>">
-					<input type="submit" value="OK" class="left" id="commentSubmit" onclick="return comment('<?=$value->id?>',0)">
+					<input type="submit" value="OK" class="left" id="commentSubmit_<?=$value->id?>" onclick="return comment('<?=$value->id?>',0)">
 				</form>
 		    </div>
 		<?php endforeach?>

@@ -24,9 +24,6 @@ class NewsController extends BaseController
         foreach ($result as $key => $value1) {
             $comments = json_decode($this->httpRequest('http://dev.timepicker.cn/api/comment?object=readparty&object_id='.$value1->id.'&app_id=25&page=1','5a350362534f8a12d148743d26faa21d'))->result;
             // var_dump($comments);exit();
-            foreach ($comments as $key => $value2) {
-                $value2->commentsRelate = json_decode($this->httpRequest('http://dev.timepicker.cn/api/comment/'.$value2->id.'/relate?page=1','5a350362534f8a12d148743d26faa21d'))->result;
-            }
             $value1->comments = $comments;
             $value1->commentsCount = json_decode($this->httpRequest('http://dev.timepicker.cn/api/comment/count?object=readparty&object_ids='.$value1->id.'&app_id=25','5a350362534f8a12d148743d26faa21d'))->result[0];
             
