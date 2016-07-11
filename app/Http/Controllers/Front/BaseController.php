@@ -191,6 +191,7 @@ class BaseController extends Controller
             if (empty($user_exits)) {
                 $result->user_id = DB::table('user')
                     ->insertGetId([
+                        'user_id' => $userInfo->id,
                         'name' => $userInfo->name,
                         'sex'    => $userInfo->sex,
                         'icon' => $userInfo->icon, 

@@ -16,7 +16,10 @@ $app->get('/admin', function()
 		return view('admin.login');
 	return view('admin.admin');
 });
-
+$app->get('/goodNews', function()
+{	
+	return view('front.goodNews');
+});
 session_start();
 if(isset($_GET['token'])){
 	$_SESSION['token'] = $_GET['token'];

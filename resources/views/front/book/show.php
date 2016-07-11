@@ -16,7 +16,7 @@
     <img class="bookCover"  src="<?=$result->book_img?>">
     <a class="<?= empty($result->timeline)?'bookAction right mcolor-help':'bookAction right '?>" href="https://book.douban.com/subject_search?search_text=<?=$result->isbn?>&cat=1001">+豆瓣书评</a>
     <?php if(!empty($result->timeline)):?>    
-        <div class="<?= empty($result->timeline)?'bookValue clear mcolor-help-bg':'bookValue clear'?>">本书已累计借阅<?=$result->times?>次</div>
+        <div class="<?= empty($result->timeline)?'bookValue clear mcolor-help-bg':'bookValue clear'?>">本书已累计借阅<?=count($result->timeline)?>次</div>
         <div class="timeLine">
             <div class="timeLineItem">
                 <div class="left time">
