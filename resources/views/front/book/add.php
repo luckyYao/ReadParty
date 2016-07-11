@@ -1,7 +1,7 @@
 <?php 
-    $title        = "拾光&nbsp;&bull;&nbsp;阅读";
-    $description  = "燕大图书漂流";
-    $header       = "拾光&nbsp;&bull;&nbsp;阅读"; 
+    $title        = "拾光&nbsp;&bull;&nbsp;阅读派对";
+    $description  = "你带着书，书带着你，开启图书漂流之旅";
+    $header       = "拾光&nbsp;&bull;&nbsp;阅读派对"; 
      // var_dump($result);exit();
     
 ?>

@@ -12,11 +12,11 @@
 
     <meta name="title" content="<?=$title?>" />
     <meta name="description" content="<?=$description?>" />
+    <meta name="img" content="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/120" />
     <!--icon-->
     <link rel="shortcut icon" href="http://o859gakxp.bkt.clouddn.com/static/img/readParty.png?imageView/2/w/120" />
     <!--拾光css-->
     <link rel="stylesheet" href="http://source.timepicker.cn/static/css/ptime_v0.4.min.css">
-    <link rel="stylesheet" href="/stylesheets/ionicons.css">
     <link rel="stylesheet" href="/stylesheets/screen.css">
     <style type="text/css">
     html{
