@@ -216,11 +216,7 @@ class MineController extends BaseController
                             ["content"=>"稍后再说"]
                         ],    
                     ];
-                    $informResult1 = $this->sendInform($informData1,$_ENV["PTIME_TOKEN"]);
-                    if($informResult1["error"]){
-                        return $informResult1;
-                    }
-                    
+                    $informResult1 = $this->sendInform($informData1,$_ENV["PTIME_TOKEN"]);                    
                     return $this->jsonResponse(false,[],"漂流成功");
                 }
                 else return $this->jsonResponse(false,[],"漂流中"); 
