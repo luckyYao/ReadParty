@@ -204,9 +204,6 @@ class MineController extends BaseController
                         ],    
                     ];
                     $informResult2 = $this->sendInform($informData2,$_ENV["PTIME_TOKEN"]);
-                    if($informResult2["error"]){
-                        return $informResult2;
-                    }
                     //给漂流（from）的用户发消息 
                     $informData1 = [
                         "title"         => '阅读派对图书“'.$param['book_name'].'”已从您这里成功漂出',
