@@ -118,9 +118,6 @@ class MineController extends BaseController
                         ],
                     ];
                     $informResult = $this->sendInform($informData,$_ENV["PTIME_TOKEN"]);
-                    if($informResult["error"]){
-                        return $informResult;
-                    }
                     return $this->jsonResponse(false,[],"漂流成功");
                 }
                 else return $this->jsonResponse(false,[],"漂流中");   
@@ -161,9 +158,6 @@ class MineController extends BaseController
                         ],
                     ];
                     $informResult = $this->sendInform($informData,$_ENV["PTIME_TOKEN"]);
-                    if($informResult["error"]){
-                        return $informResult;
-                    }
                     return $this->jsonResponse(false,[],"漂流成功~");
                 }else{
                     return $this->jsonResponse(false,[],"漂流中~");
